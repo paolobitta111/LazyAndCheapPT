@@ -35,7 +35,7 @@ import type {
   UserSettingsRepo,
   BackupService,
 } from './repositories'
-import { db } from './db'
+import { db, type TrainingLogDB } from './db'
 
 const now = () => new Date().toISOString()
 
@@ -406,18 +406,24 @@ export class UserSettingsRepoImpl implements UserSettingsRepo {
 // ---------------------------------------------------------------------------
 
 export class BackupServiceImpl implements BackupService {
+  private readonly database: TrainingLogDB
+
+  constructor(databaseInstance?: TrainingLogDB) {
+    this.database = databaseInstance ?? db
+  }
+
   async exportAll(): Promise<BackupExport> {
     const [trainingPlans, plannedSessions, calendarEntries, workoutLogs, exerciseLogs, setLogs, cardioLogs, gpxAttachments, userSettings] =
       await Promise.all([
-        db.trainingPlans.toArray(),
-        db.plannedSessions.toArray(),
-        db.calendarEntries.toArray(),
-        db.workoutLogs.toArray(),
-        db.exerciseLogs.toArray(),
-        db.setLogs.toArray(),
-        db.cardioLogs.toArray(),
-        db.gpxAttachments.toArray(),
-        db.userSettings.toArray(),
+        this.database.trainingPlans.toArray(),
+        this.database.plannedSessions.toArray(),
+        this.database.calendarEntries.toArray(),
+        this.database.workoutLogs.toArray(),
+        this.database.exerciseLogs.toArray(),
+        this.database.setLogs.toArray(),
+        this.database.cardioLogs.toArray(),
+        this.database.gpxAttachments.toArray(),
+        this.database.userSettings.toArray(),
       ])
 
     return {
@@ -436,16 +442,19 @@ export class BackupServiceImpl implements BackupService {
   }
 
   async importAll(data: BackupExport): Promise<void> {
-    await db.transaction('rw', db.tables, async () => {
-      if (data.trainingPlans) await db.trainingPlans.bulkPut(data.trainingPlans)
-      if (data.plannedSessions) await db.plannedSessions.bulkPut(data.plannedSessions)
-      if (data.calendarEntries) await db.calendarEntries.bulkPut(data.calendarEntries)
-      if (data.workoutLogs) await db.workoutLogs.bulkPut(data.workoutLogs)
-      if (data.exerciseLogs) await db.exerciseLogs.bulkPut(data.exerciseLogs)
-      if (data.setLogs) await db.setLogs.bulkPut(data.setLogs)
-      if (data.cardioLogs) await db.cardioLogs.bulkPut(data.cardioLogs)
-      if (data.gpxAttachments) await db.gpxAttachments.bulkPut(data.gpxAttachments)
-      if (data.userSettings) await db.userSettings.bulkPut(data.userSettings)
+    await this.database.transaction('rw', this.database.tables, async () => {
+      if (data.trainingPlans) await this.database.trainingPlans.bulkPut(data.trainingPlans)
+      if (data.plannedSessions) await this.database.plannedSessions.bulkPut(data.plannedSessions)
+      if (data.calendarEntries) await this.database.calendarEntries.bulkPut(data.calendarEntries)
+      if (data.workoutLogs) await this.database.workoutLogs.bulkPut(data.workoutLogs)
+      if (data.exerciseLogs) await this.database.exerciseLogs.bulkPut(data.exerciseLogs)
+      if (data.setLogs) await this.database.setLogs.bulkPut(data.setLogs)
+      if (data.cardioLogs) await this.database.cardioLogs.bulkPut(data.cardioLogs)
+      if (data.gpxAttachments) await this.database.gpxAttachments.bulkPut(data.gpxAttachments)
+      if (data.userSettings) await this.database.userSettings.bulkPut(data.userSettings)
     })
   }
 }
+
+export { type BackupService } from './repositories'
+export { type BackupExport } from '../models/entities'

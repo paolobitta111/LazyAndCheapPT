@@ -38,7 +38,7 @@ export class TrainingLogDB extends Dexie {
     this.version(1).stores(
       {
         trainingPlans:    '&id',
-        plannedSessions:  '&id, [planId+date], status',
+        plannedSessions:  '&id, date, [planId+date], status',
         calendarEntries:  '&id, date, [type+referenceId]',
         workoutLogs:      '&id, date, [plannedSessionId+date]',
         exerciseLogs:     '&id, workoutLogId, exerciseId',
