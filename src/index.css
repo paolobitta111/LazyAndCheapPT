@@ -1,1 +1,15 @@
-/* app styles */
+@import 'bulma/css/bulma.css';
+
+html, body, #root {
+  height: 100%;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+}
