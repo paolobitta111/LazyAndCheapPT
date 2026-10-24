@@ -8,7 +8,7 @@
 
 /** All persisted entities share these fields. */
 export interface Entity {
-  id: string
+  id?: string
   createdAt: Date
   updatedAt: Date
 }
@@ -151,7 +151,7 @@ export interface BackupExport {
   setLogs: SetLog[]
   cardioLogs: CardioLog[]
   gpxAttachments: GpxAttachment[]
-  userSettings?: UserSettings | null
+  userSettings?: UserSettings[]
 }
 
 export type CreateBackupExportInput = Omit<BackupExport, 'timestamp' | 'version'>
