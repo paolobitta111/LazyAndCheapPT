@@ -3,32 +3,37 @@ import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import App from '../App'
 
-const renderWithRouter = (ui: React.ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>)
-
-// Mock CSS imports to avoid Bulma parsing issues in jsdom
 vi.mock('../index.css', () => ({}))
+vi.mock('../pages/Today', () => ({ default: () => <div>Today Page</div> }))
+vi.mock('../pages/Plans', () => ({ default: () => <div>Plans Page</div> }))
+vi.mock('../pages/Calendar', () => ({ default: () => <div>Calendar Page</div> }))
+vi.mock('../pages/History', () => ({ default: () => <div>History Page</div> }))
+vi.mock('../pages/NotFound', () => ({ default: () => <div>404</div> }))
+vi.mock('../pages/LlmBridge', () => ({ default: () => <div>LLM Page</div> }))
 
-// Mock all page components to avoid Bulma CSS parsing
-vi.mock('../pages/Today', () => ({ default: () => <div data-testid="today-page">Today Page</div> }))
-vi.mock('../pages/Plans', () => ({ default: () => <div data-testid="plans-page">Plans Page</div> }))
-vi.mock('../pages/Calendar', () => ({ default: () => <div data-testid="calendar-page">Calendar Page</div> }))
-vi.mock('../pages/History', () => ({ default: () => <div data-testid="history-page">History Page</div> }))
-vi.mock('../pages/NotFound', () => ({ default: () => <div data-testid="not-found-page">404</div> }))
+function renderAt(path: string) {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <App />
+    </MemoryRouter>,
+  )
+}
 
-describe('App', () => {
-  it('renders the layout shell', () => {
-    const { container } = renderWithRouter(<App />)
-    const html = container.innerHTML
-    // Navbar should be present
-    expect(html).toContain('LazyCheapCoach')
-    // Today page should be rendered by default
-    expect(html).toContain('Today Page')
+describe('App chrome', () => {
+  it('shows an ink title capsule and five tabs on Oggi', () => {
+    const { container } = renderAt('/')
+    const title = container.querySelector('header.glass-bar')
+    expect(title?.textContent).toContain('Oggi')
+    expect(container.textContent).toContain('Impostazioni')
+    expect(container.querySelector('.glass-bar')).not.toBeNull()
+    expect(container.innerHTML).not.toContain('navbar')
+    expect(container.innerHTML).not.toContain('bottom-nav')
+    expect(title?.innerHTML ?? '').not.toContain('href="#/llm"')
   })
 
-  it('renders bottom navigation', () => {
-    const { container } = renderWithRouter(<App />)
-    const html = container.innerHTML
-    expect(html).toContain('bottom-nav')
-    expect(html).toContain('bottom-nav-item')
+  it('does not mark a tab active on the LLM route', () => {
+    const { container } = renderAt('/llm')
+    expect(container.querySelector('header.glass-bar')?.textContent).toContain('LLM')
+    expect(container.querySelector('button.active')).toBeNull()
   })
 })

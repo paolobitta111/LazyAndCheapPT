@@ -15,7 +15,7 @@ const navItems: { id: string; icon: NavIconName; label: string }[] = [
 ]
 
 export const BottomNav: FC<BottomNavProps> = ({ activeTab, onNavigate }) => (
-  <nav className="glass-bar bottom-nav" aria-label="Principale">
+  <nav className="glass-bar" aria-label="Principale">
     {navItems.map((item) => {
       const active = activeTab === item.id
       return (

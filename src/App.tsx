@@ -12,31 +12,18 @@ import LlmBridge from './pages/LlmBridge'
 import Settings from './pages/Settings'
 import { DataProvider } from './data/db'
 
+const tabIds = new Set(['/', '/schede', '/calendario', '/storico', '/impostazioni'])
 
-
-function Navbar() {
-  return (
-    <nav className="navbar is-fixed-top is-white" role="navigation" aria-label="LazyCheapCoach">
-      <div className="navbar-brand">
-        <a className="navbar-item" href="/">
-          <span className="icon is-medium mr-2">
-            <svg width="32" height="32" viewBox="0 0 64 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-              <rect x="0" y="12" width="8" height="16" rx="2" fill="#2577b9" />
-              <rect x="56" y="12" width="8" height="16" rx="2" fill="#2577b9" />
-              <rect x="8" y="14" width="48" height="4" rx="2" fill="#434343" />
-            </svg>
-          </span>
-          <span className="is-size-5 has-text-weight-bold">LazyCheapCoach</span>
-        </a>
-      </div>
-      <div className="navbar-menu">
-        <div className="navbar-end">
-          <a className="navbar-item" href="#/impostazioni">Impostazioni</a>
-          <a className="navbar-item" href="#/llm">LLM</a>
-        </div>
-      </div>
-    </nav>
-  )
+export function pageTitle(pathname: string): string {
+  if (pathname === '/') return 'Oggi'
+  if (pathname === '/schede') return 'Schede'
+  if (pathname === '/calendario') return 'Calendario'
+  if (pathname === '/storico') return 'Storico'
+  if (pathname === '/impostazioni') return 'Impostazioni'
+  if (pathname === '/llm') return 'LLM'
+  if (pathname === '/cardio') return 'Cardio'
+  if (pathname.startsWith('/workout/')) return 'Sessione'
+  return 'Pagina'
 }
 
 function LayoutShell() {
@@ -47,9 +34,13 @@ function LayoutShell() {
     navigate(tab)
   }, [navigate])
 
+  const activeTab = tabIds.has(location.pathname) ? location.pathname : ''
+
   return (
     <div className="layout-shell">
-      <Navbar />
+      <header className="glass-bar">
+        <h1>{pageTitle(location.pathname)}</h1>
+      </header>
       <main className="main-content" role="main">
         <Routes>
           <Route path="/" element={<Today />} />
@@ -63,7 +54,7 @@ function LayoutShell() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
-      <BottomNav activeTab={location.pathname} onNavigate={handleNavigate} />
+      <BottomNav activeTab={activeTab} onNavigate={handleNavigate} />
     </div>
   )
 }
