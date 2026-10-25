@@ -30,9 +30,13 @@ import type {
 
 export interface TrainingPlanRepo {
   create(data: CreateTrainingPlanInput): Promise<TrainingPlan>
-  update(id: string, data: Partial<Omit<TrainingPlan, 'id' | 'createdAt'>>): Promise<TrainingPlan>
+  update(id: string, data: Partial<Omit<TrainingPlan, 'id' | 'createdAt' | 'version' | 'status'>>): Promise<TrainingPlan>
   get(id: string): Promise<TrainingPlan | null>
   list(): Promise<TrainingPlan[]>
+  listByStatus(status: 'draft' | 'active' | 'archived'): Promise<TrainingPlan[]>
+  getByVersion(planId: string, version: number): Promise<TrainingPlan | null>
+  duplicate(planId: string): Promise<TrainingPlan>
+  archive(planId: string): Promise<TrainingPlan>
   delete(id: string): Promise<void>
   getByExerciseName(name: string): Promise<TrainingPlan[]>
 }

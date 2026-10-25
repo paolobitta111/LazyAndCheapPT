@@ -25,13 +25,21 @@ export interface TrainingExercise {
   defaultKg: number
 }
 
+export type TrainingPlanStatus = 'draft' | 'active' | 'archived'
+
 export interface TrainingPlan extends Entity {
   name: string
   description: string
   exercises: TrainingExercise[]
+  version: number
+  status: TrainingPlanStatus
+  sport?: string
+  objective?: string
+  notes?: string
+  archivedAt?: Date
 }
 
-export type CreateTrainingPlanInput = Omit<TrainingPlan, 'id' | 'createdAt' | 'updatedAt'>
+export type CreateTrainingPlanInput = Omit<TrainingPlan, 'id' | 'createdAt' | 'updatedAt' | 'version' | 'status' | 'archivedAt'>
 
 // ---------------------------------------------------------------------------
 // PlannedSession

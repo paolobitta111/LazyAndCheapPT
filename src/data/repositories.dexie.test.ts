@@ -39,6 +39,7 @@ describe('TrainingPlan', () => {
       name: 'Test Plan',
       description: 'Test description',
       exercises: [{ id: 'ex-1', name: 'Bench Press', defaultSets: 3, defaultReps: 10, defaultKg: 60 }],
+      version: 1, status: 'active',
       createdAt: new Date('2024-01-01'),
       updatedAt: new Date('2024-01-01'),
     }
@@ -49,14 +50,14 @@ describe('TrainingPlan', () => {
   })
 
   it('lists all training plans', async () => {
-    await db.trainingPlans.add({ id: 'plan-1', name: 'Plan 1', description: '', exercises: [], createdAt: new Date(), updatedAt: new Date() })
-    await db.trainingPlans.add({ id: 'plan-2', name: 'Plan 2', description: '', exercises: [], createdAt: new Date(), updatedAt: new Date() })
+    await db.trainingPlans.add({ id: 'plan-1', name: 'Plan 1', description: '', exercises: [], version: 1, status: 'active', createdAt: new Date(), updatedAt: new Date() })
+    await db.trainingPlans.add({ id: 'plan-2', name: 'Plan 2', description: '', exercises: [], version: 1, status: 'active', createdAt: new Date(), updatedAt: new Date() })
     const all = await db.trainingPlans.toArray()
     expect(all.length).toBe(2)
   })
 
   it('updates a training plan', async () => {
-    await db.trainingPlans.add({ id: 'plan-1', name: 'Old', description: '', exercises: [], createdAt: new Date(), updatedAt: new Date() })
+    await db.trainingPlans.add({ id: 'plan-1', name: 'Old', description: '', exercises: [], version: 1, status: 'active', createdAt: new Date(), updatedAt: new Date() })
     await db.trainingPlans.update('plan-1', { name: 'New' })
     const updated = await db.trainingPlans.get('plan-1')
     expect(updated?.name).toBe('New')
@@ -310,7 +311,7 @@ describe('BackupService', () => {
   beforeEach(clearAll)
 
   it('exports all data', async () => {
-    await db.trainingPlans.add({ id: 'plan-1', name: 'Plan 1', description: '', exercises: [], createdAt: new Date(), updatedAt: new Date() })
+    await db.trainingPlans.add({ id: 'plan-1', name: 'Plan 1', description: '', exercises: [], version: 1, status: 'active', createdAt: new Date(), updatedAt: new Date() })
     await db.userSettings.add({ id: 'user-1', preferredView: 'list', firstDayOfWeek: 1, distanceUnit: 'km', weightUnit: 'kg', createdAt: new Date(), updatedAt: new Date() })
 
     const exportData = await backupService.exportAll()
@@ -325,7 +326,7 @@ describe('BackupService', () => {
     const exportData = {
       timestamp: new Date().toISOString(),
       version: '1.0.0',
-      trainingPlans: [{ id: 'plan-1', name: 'Imported', description: '', exercises: [], createdAt: new Date(), updatedAt: new Date() }],
+      trainingPlans: [{ id: 'plan-1', name: 'Imported', description: '', exercises: [], version: 1, status: 'active' as const, createdAt: new Date(), updatedAt: new Date() }],
       plannedSessions: [],
       calendarEntries: [],
       workoutLogs: [],
@@ -346,14 +347,14 @@ describe('BackupService', () => {
 
   it('import overwrites existing data', async () => {
     // Add existing data
-    await db.trainingPlans.add({ id: 'plan-1', name: 'Existing', description: '', exercises: [], createdAt: new Date(), updatedAt: new Date() })
+    await db.trainingPlans.add({ id: 'plan-1', name: 'Existing', description: '', exercises: [], version: 1, status: 'active', createdAt: new Date(), updatedAt: new Date() })
     expect((await db.trainingPlans.get('plan-1'))?.name).toBe('Existing')
 
     // Import with different data
     const exportData = {
       timestamp: new Date().toISOString(),
       version: '1.0.0',
-      trainingPlans: [{ id: 'plan-1', name: 'Overwritten', description: '', exercises: [], createdAt: new Date(), updatedAt: new Date() }],
+      trainingPlans: [{ id: 'plan-1', name: 'Overwritten', description: '', exercises: [], version: 1, status: 'active' as const, createdAt: new Date(), updatedAt: new Date() }],
       plannedSessions: [],
       calendarEntries: [],
       workoutLogs: [],

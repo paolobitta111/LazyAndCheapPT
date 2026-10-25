@@ -3,6 +3,9 @@
   "documentType": "training-plan",
   "name": "Full Body A",
   "version": 1,
+  "sport": "strength",
+  "objective": "Forza e ipertrofia",
+  "notes": "Piano base per full body",
   "createdAt": "2026-10-20T08:00:00Z",
   "updatedAt": "2026-10-20T08:00:00Z",
   "exercises": [

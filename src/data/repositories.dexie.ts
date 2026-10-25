@@ -46,7 +46,14 @@ const now = () => new Date().toISOString()
 export class TrainingPlanRepoImpl implements TrainingPlanRepo {
   async create(input: CreateTrainingPlanInput): Promise<TrainingPlan> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
+    const entity = {
+      ...input,
+      version: 1,
+      status: 'active',
+      // SAFETY: Dexie stores ISO strings; entity interface declares Date (coerced in persistence layer)
+      createdAt: now() as unknown as Date,
+      updatedAt: now() as unknown as Date,
+    } as TrainingPlan
     const key = await db.trainingPlans.add(entity)
     return { ...entity, id: key as string }
   }
@@ -55,7 +62,7 @@ export class TrainingPlanRepoImpl implements TrainingPlanRepo {
     return (await db.trainingPlans.get(id)) ?? null
   }
 
-  async update(id: string, input: Partial<Omit<TrainingPlan, 'id' | 'createdAt' | 'updatedAt'>>): Promise<TrainingPlan> {
+  async update(id: string, input: Partial<Omit<TrainingPlan, 'id' | 'createdAt' | 'updatedAt' | 'version' | 'status'>>): Promise<TrainingPlan> {
     const existing = await this.get(id)
     if (!existing) throw new Error(`TrainingPlan ${id} not found`)
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
@@ -70,6 +77,39 @@ export class TrainingPlanRepoImpl implements TrainingPlanRepo {
 
   async list(): Promise<TrainingPlan[]> {
     return db.trainingPlans.toArray()
+  }
+
+  async listByStatus(status: 'draft' | 'active' | 'archived'): Promise<TrainingPlan[]> {
+    const all = await db.trainingPlans.toArray()
+    return all.filter(p => p.status === status)
+  }
+
+  async getByVersion(planId: string, version: number): Promise<TrainingPlan | null> {
+    const all = await db.trainingPlans.toArray()
+    return all.find(p => p.id === planId && p.version === version) ?? null
+  }
+
+  async duplicate(planId: string): Promise<TrainingPlan> {
+    const existing = await this.get(planId)
+    if (!existing) throw new Error(`TrainingPlan ${planId} not found`)
+    const duplicate: CreateTrainingPlanInput = {
+      name: `${existing.name} (Copy)`,
+      description: existing.description,
+      exercises: existing.exercises,
+      sport: existing.sport,
+      objective: existing.objective,
+      notes: existing.notes,
+    }
+    return this.create(duplicate)
+  }
+
+  async archive(planId: string): Promise<TrainingPlan> {
+    const existing = await this.get(planId)
+    if (!existing) throw new Error(`TrainingPlan ${planId} not found`)
+    // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
+    const archived: TrainingPlan = { ...existing, status: 'archived', archivedAt: new Date(), updatedAt: now() as unknown as Date }
+    await db.trainingPlans.put(archived)
+    return archived
   }
 
   async getByExerciseName(name: string): Promise<TrainingPlan[]> {

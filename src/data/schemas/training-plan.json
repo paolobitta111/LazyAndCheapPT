@@ -27,6 +27,23 @@
       "minimum": 1,
       "description": "Incremental version number (immutable history)"
     },
+    "sport": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
+      "description": "Predominant sport (e.g. strength, running)"
+    },
+    "objective": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Training objective"
+    },
+    "notes": {
+      "type": "string",
+      "maxLength": 2000,
+      "description": "Free-form notes"
+    },
     "createdAt": {
       "type": "string",
       "format": "date-time",
