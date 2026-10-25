@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0.0",
+  "documentType": "training-plan",
+  "name": "Full Body A",
+  "version": 1,
+  "createdAt": "2026-10-20T08:00:00Z",
+  "updatedAt": "2026-10-20T08:00:00Z",
+  "exercises": [
+    {
+      "id": "panca-piana",
+      "name": "Panca Piana",
+      "sets": 4,
+      "reps": 8,
+      "weight": "60 kg"
+    },
+    {
+      "id": "stacco-rumano",
+      "name": "Stacco Rumano",
+      "sets": 3,
+      "reps": 10,
+      "weight": "50 kg"
+    },
+    {
+      "id": "shoulder-press",
+      "name": "Shoulder Press",
+      "sets": 3,
+      "reps": 12,
+      "weight": "20 kg"
+    }
+  ],
+  "plannedSessions": [
+    {
+      "dayOfWeek": 1,
+      "order": 1
+    },
+    {
+      "dayOfWeek": 3,
+      "order": 1
+    },
+    {
+      "dayOfWeek": 5,
+      "order": 1
+    }
+  ]
+}

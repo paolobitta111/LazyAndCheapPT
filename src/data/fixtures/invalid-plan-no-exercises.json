@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "documentType": "training-plan",
+  "name": "Invalid Plan Test",
+  "version": 0,
+  "createdAt": "2026-10-20T08:00:00Z",
+  "updatedAt": "2026-10-20T08:00:00Z",
+  "exercises": []
+}

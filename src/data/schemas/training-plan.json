@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lazycheapcoach.dev/schemas/training-plan/v1.0.0",
+  "title": "Training Plan",
+  "description": "Schema for a training plan with exercises and planned sessions. v1.0.0",
+  "type": "object",
+  "required": ["schemaVersion", "documentType", "name", "version", "exercises"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0",
+      "description": "Schema version identifier"
+    },
+    "documentType": {
+      "type": "string",
+      "const": "training-plan",
+      "description": "Document type discriminator"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Human-readable name of the plan"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Incremental version number (immutable history)"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of plan creation"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of last update"
+    },
+    "exercises": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "sets", "reps", "weight"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$",
+            "description": "Lowercase slug ID for the exercise"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "sets": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "reps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100
+          },
+          "weight": {
+            "type": "string",
+            "pattern": "^[0-9]+\\.?[0-9]*\\s*(kg|lb|bodyweight)$",
+            "description": "Weight value with unit"
+          }
+        }
+      }
+    },
+    "plannedSessions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["dayOfWeek", "order"],
+        "properties": {
+          "dayOfWeek": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 7,
+            "description": "Monday=1, Sunday=7"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Execution order within the day"
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}
