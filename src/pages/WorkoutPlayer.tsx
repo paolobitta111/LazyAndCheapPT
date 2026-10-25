@@ -22,7 +22,7 @@ export default function WorkoutPlayer() {
   }, [planId])
 
   if (!plannedSession) return null
-  const session = useWorkoutSession({ plannedSessionId: plannedSession.id! })
+  const session = useWorkoutSession({ plannedSessionId: plannedSession.id!, planId: plannedSession.planId })
   const [kg, setKg] = useState<number>(0)
   const [reps, setReps] = useState<number>(0)
   const [rpe, setRpe] = useState<number | undefined>(undefined)

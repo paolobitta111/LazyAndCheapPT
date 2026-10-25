@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useAppData } from '../data/db'
 import { CardioLogService } from '../services/cardio-log.service'
+import { inspectGpx } from '../services/gpx'
 import type { CardioSegment } from '../models/entities'
 
 type Sport = 'running' | 'cycling' | 'other'
@@ -15,7 +16,7 @@ const emptySegment = (): CardioSegment => ({
 })
 
 export default function Cardio() {
-  const { cardioLogRepo } = useAppData()
+  const { cardioLogRepo, gpxAttachmentRepo } = useAppData()
   const service = new CardioLogService(cardioLogRepo)
   const [sport, setSport] = useState<Sport>('running')
   const [notes, setNotes] = useState('')
@@ -23,6 +24,7 @@ export default function Cardio() {
   const [distanceKm, setDistanceKm] = useState(3)
   const [segments, setSegments] = useState<CardioSegment[]>([])
   const [savedId, setSavedId] = useState<string | null>(null)
+  const [gpxSummary, setGpxSummary] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const date = new Date().toISOString().slice(0, 10)
@@ -131,6 +133,32 @@ export default function Cardio() {
         <button className="button" type="button" onClick={() => setSegments((current) => [...current, emptySegment()])}>Aggiungi segmento</button>
         <button className="button is-link" type="button" onClick={saveSegments}>Salva con segmenti</button>
       </div>
+      <h2 className="title is-5 mt-5">GPX</h2>
+      <p className="help">Il file resta sul dispositivo. Nessuna mappa.</p>
+      <input
+        className="mb-3"
+        type="file"
+        accept=".gpx,application/gpx+xml,text/xml"
+        onChange={async (event) => {
+          const file = event.target.files?.[0]
+          if (!file) return
+          const xml = await file.text()
+          const inspection = inspectGpx(xml)
+          if (!inspection.valid) {
+            setError(inspection.errors.join('; '))
+            return
+          }
+          const attachment = await gpxAttachmentRepo.create({
+            cardioLogId: savedId ?? undefined,
+            fileName: file.name,
+            fileData: xml,
+            uploadedAt: new Date(),
+          })
+          setGpxSummary(`${attachment.fileName}: ${inspection.pointCount} punti, ${inspection.distanceKm.toFixed(2)} km`)
+          setError(null)
+        }}
+      />
+      {gpxSummary && <p>{gpxSummary}</p>}
       {error && <p className="has-text-danger">{error}</p>}
       {savedId && <p className="has-text-success">Salvato: {savedId}</p>}
     </div>

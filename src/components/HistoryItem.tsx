@@ -5,9 +5,10 @@ interface HistoryItemProps {
   type: 'workout' | 'cardio'
   duration: string
   planName?: string
+  notes?: string
 }
 
-export const HistoryItem: FC<HistoryItemProps> = ({ date, type, duration, planName }) => {
+export const HistoryItem: FC<HistoryItemProps> = ({ date, type, duration, planName, notes }) => {
   const icon = type === 'workout' ? '🏋️' : '🏃'
   const tagClass = type === 'workout' ? 'is-primary' : 'is-info'
 
@@ -24,6 +25,7 @@ export const HistoryItem: FC<HistoryItemProps> = ({ date, type, duration, planNa
             <p className="title is-6 mb-0">{date}</p>
             {planName && <p className="has-text-grey is-size-7">{planName}</p>}
             <p className="has-text-grey is-size-7">{duration}</p>
+            {notes && <p className="is-size-7">{notes}</p>}
           </div>
           <div className="media-right">
             <span className="icon has-text-grey">

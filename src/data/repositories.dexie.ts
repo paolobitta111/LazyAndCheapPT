@@ -481,17 +481,28 @@ export class BackupServiceImpl implements BackupService {
     }
   }
 
+  private async putAll(data: BackupExport): Promise<void> {
+    if (data.trainingPlans) await this.database.trainingPlans.bulkPut(data.trainingPlans)
+    if (data.plannedSessions) await this.database.plannedSessions.bulkPut(data.plannedSessions)
+    if (data.calendarEntries) await this.database.calendarEntries.bulkPut(data.calendarEntries)
+    if (data.workoutLogs) await this.database.workoutLogs.bulkPut(data.workoutLogs)
+    if (data.exerciseLogs) await this.database.exerciseLogs.bulkPut(data.exerciseLogs)
+    if (data.setLogs) await this.database.setLogs.bulkPut(data.setLogs)
+    if (data.cardioLogs) await this.database.cardioLogs.bulkPut(data.cardioLogs)
+    if (data.gpxAttachments) await this.database.gpxAttachments.bulkPut(data.gpxAttachments)
+    if (data.userSettings) await this.database.userSettings.bulkPut(data.userSettings)
+  }
+
+  async replaceAll(data: BackupExport): Promise<void> {
+    await this.database.transaction('rw', this.database.tables, async () => {
+      await Promise.all(this.database.tables.map((table) => table.clear()))
+      await this.putAll(data)
+    })
+  }
+
   async importAll(data: BackupExport): Promise<void> {
     await this.database.transaction('rw', this.database.tables, async () => {
-      if (data.trainingPlans) await this.database.trainingPlans.bulkPut(data.trainingPlans)
-      if (data.plannedSessions) await this.database.plannedSessions.bulkPut(data.plannedSessions)
-      if (data.calendarEntries) await this.database.calendarEntries.bulkPut(data.calendarEntries)
-      if (data.workoutLogs) await this.database.workoutLogs.bulkPut(data.workoutLogs)
-      if (data.exerciseLogs) await this.database.exerciseLogs.bulkPut(data.exerciseLogs)
-      if (data.setLogs) await this.database.setLogs.bulkPut(data.setLogs)
-      if (data.cardioLogs) await this.database.cardioLogs.bulkPut(data.cardioLogs)
-      if (data.gpxAttachments) await this.database.gpxAttachments.bulkPut(data.gpxAttachments)
-      if (data.userSettings) await this.database.userSettings.bulkPut(data.userSettings)
+      await this.putAll(data)
     })
   }
 }

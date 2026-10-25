@@ -75,6 +75,9 @@ export interface WorkoutLog extends Entity {
   date: string            // YYYY-MM-DD
   durationSec?: number
   notes?: string
+  planId?: string
+  planVersion?: number
+  planName?: string
 }
 
 export type CreateWorkoutLogInput = Omit<WorkoutLog, 'id' | 'createdAt' | 'updatedAt'>

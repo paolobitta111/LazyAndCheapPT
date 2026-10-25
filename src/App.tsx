@@ -8,6 +8,8 @@ import History from './pages/History'
 import NotFound from './pages/NotFound'
 import WorkoutPlayer from './pages/WorkoutPlayer'
 import Cardio from './pages/Cardio'
+import LlmBridge from './pages/LlmBridge'
+import Settings from './pages/Settings'
 import { DataProvider } from './data/db'
 
 
@@ -29,10 +31,8 @@ function Navbar() {
       </div>
       <div className="navbar-menu">
         <div className="navbar-end">
-          <a className="navbar-item" href="/">
-            <span className="icon mr-1">⚙️</span>
-            <span>Impostazioni</span>
-          </a>
+          <a className="navbar-item" href="#/impostazioni">Impostazioni</a>
+          <a className="navbar-item" href="#/llm">LLM</a>
         </div>
       </div>
     </nav>
@@ -58,6 +58,8 @@ function LayoutShell() {
           <Route path="/storico" element={<History />} />
           <Route path="/workout/:planId" element={<WorkoutPlayer />} />
           <Route path="/cardio" element={<Cardio />} />
+          <Route path="/llm" element={<LlmBridge />} />
+          <Route path="/impostazioni" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

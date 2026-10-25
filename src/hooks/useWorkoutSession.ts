@@ -5,6 +5,7 @@ import { useAppData } from '../data/db'
 
 interface UseWorkoutSessionOpts {
   plannedSessionId: string
+  planId?: string
 }
 
 interface UseWorkoutSessionReturn {
@@ -30,8 +31,9 @@ interface UseWorkoutSessionReturn {
 
 export function useWorkoutSession({
   plannedSessionId,
+  planId,
 }: UseWorkoutSessionOpts): UseWorkoutSessionReturn {
-  const { workoutLogRepo, setLogRepo } = useAppData()
+  const { workoutLogRepo, setLogRepo, trainingPlanRepo } = useAppData()
   const [workoutLog, setWorkoutLog] = useState<WorkoutLog | null>(null)
   const [setLogs, setSetLogs] = useState<SetLog[]>([])
   const [elapsedSec, setElapsedSec] = useState(0)
@@ -78,17 +80,22 @@ export function useWorkoutSession({
 
   const startSession = useCallback(async () => {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
+    const plan = planId ? await trainingPlanRepo.get(planId) : null
+    // SAFETY: create() persists dates; this in-memory log is the same shape returned after insert
     const log: WorkoutLog = {
       id: `wl-${Date.now()}`,
       plannedSessionId,
       date: new Date().toISOString().split('T')[0],
       notes: '',
+      planId,
+      planVersion: plan?.version,
+      planName: plan?.name,
     } as unknown as WorkoutLog
     await workoutLogRepo.create(log)
     setWorkoutLog(log)
     setIsRunning(true)
     startedAtRef.current = Date.now()
-  }, [plannedSessionId, workoutLogRepo])
+  }, [plannedSessionId, planId, workoutLogRepo, trainingPlanRepo])
 
   const addSet = useCallback(
     async (exerciseLogId: string, repCount: number, kg: number, rpe?: number): Promise<SetLog> => {

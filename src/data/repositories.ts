@@ -150,4 +150,5 @@ export interface UserSettingsRepo {
 export interface BackupService {
   exportAll(): Promise<BackupExport>
   importAll(data: BackupExport): Promise<void>
+  replaceAll(data: BackupExport): Promise<void>
 }
