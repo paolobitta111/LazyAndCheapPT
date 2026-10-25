@@ -6,6 +6,7 @@ import Plans from './pages/Plans'
 import Calendar from './pages/Calendar'
 import History from './pages/History'
 import NotFound from './pages/NotFound'
+import { DataProvider } from './data/db'
 
 
 
@@ -62,5 +63,9 @@ function LayoutShell() {
 }
 
 export default function App() {
-  return <LayoutShell />
+  return (
+    <DataProvider>
+      <LayoutShell />
+    </DataProvider>
+  )
 }

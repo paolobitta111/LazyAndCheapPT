@@ -3,6 +3,8 @@
 // ============================================================================
 
 import Dexie, { type Table } from 'dexie'
+import type { ReactNode } from 'react'
+import { createContext, useContext } from 'react'
 import type {
   TrainingPlan,
   PlannedSession,
@@ -14,6 +16,11 @@ import type {
   GpxAttachment,
   UserSettings,
 } from '../models/entities.ts'
+import type {
+  TrainingPlanRepo,
+  PlannedSessionRepo,
+} from './repositories.ts'
+import { TrainingPlanRepoImpl, PlannedSessionRepoImpl } from './repositories.dexie'
 
 // ---------------------------------------------------------------------------
 // Database class
@@ -53,3 +60,32 @@ export class TrainingLogDB extends Dexie {
 
 // Singleton instance
 export const db = new TrainingLogDB()
+
+// ---------------------------------------------------------------------------
+// React context for dependency injection of repo instances
+// ---------------------------------------------------------------------------
+
+export interface AppData {
+  trainingPlanRepo: TrainingPlanRepo
+  plannedSessionRepo: PlannedSessionRepo
+}
+
+const AppDataContext = createContext<AppData | null>(null)
+
+export function DataProvider(props: { children: ReactNode }): React.ReactElement {
+  // Singleton repos — safe because React renders synchronously
+  const trainingPlanRepo = new TrainingPlanRepoImpl()
+  const plannedSessionRepo = new PlannedSessionRepoImpl()
+
+  return (
+    <AppDataContext.Provider value={{ trainingPlanRepo, plannedSessionRepo }}>
+      {props.children}
+    </AppDataContext.Provider>
+  )
+}
+
+export function useAppData(): AppData {
+  const ctx = useContext(AppDataContext)
+  if (!ctx) throw new Error('useAppData must be used within DataProvider')
+  return ctx
+}
