@@ -113,6 +113,16 @@ export interface CardioLog extends Entity {
   distanceKm?: number
   calories?: number
   notes?: string
+  segments?: CardioSegment[]
+}
+
+export interface CardioSegment {
+  type: 'warmup' | 'interval' | 'recovery' | 'main'
+  startTime: Date
+  endTime: Date
+  distanceKm?: number
+  durationSec: number
+  pace?: number
 }
 
 export type CreateCardioLogInput = Omit<CardioLog, 'id' | 'createdAt' | 'updatedAt'>

@@ -118,7 +118,6 @@ export interface CardioLogRepo {
   get(id: string): Promise<CardioLog | null>
   list(): Promise<CardioLog[]>
   listByDate(date: string): Promise<CardioLog[]>
-  listByType(type: 'running' | 'cycling' | 'other'): Promise<CardioLog[]>
   delete(id: string): Promise<void>
 }
 

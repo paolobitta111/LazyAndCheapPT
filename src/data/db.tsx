@@ -22,6 +22,7 @@ import type {
   WorkoutLogRepo,
   ExerciseLogRepo,
   SetLogRepo,
+  CardioLogRepo,
 } from './repositories.ts'
 import {
   TrainingPlanRepoImpl,
@@ -29,6 +30,7 @@ import {
   WorkoutLogRepoImpl,
   ExerciseLogRepoImpl,
   SetLogRepoImpl,
+  CardioLogRepoImpl,
 } from './repositories.dexie'
 
 // ---------------------------------------------------------------------------
@@ -80,6 +82,7 @@ export interface AppData {
   workoutLogRepo: WorkoutLogRepo
   exerciseLogRepo: ExerciseLogRepo
   setLogRepo: SetLogRepo
+  cardioLogRepo: CardioLogRepo
 }
 
 const AppDataContext = createContext<AppData | null>(null)
@@ -91,9 +94,10 @@ export function DataProvider(props: { children: ReactNode }): React.ReactElement
   const workoutLogRepo = new WorkoutLogRepoImpl()
   const exerciseLogRepo = new ExerciseLogRepoImpl()
   const setLogRepo = new SetLogRepoImpl()
+  const cardioLogRepo = new CardioLogRepoImpl()
 
   return (
-    <AppDataContext.Provider value={{ trainingPlanRepo, plannedSessionRepo, workoutLogRepo, exerciseLogRepo, setLogRepo }}>
+    <AppDataContext.Provider value={{ trainingPlanRepo, plannedSessionRepo, workoutLogRepo, exerciseLogRepo, setLogRepo, cardioLogRepo }}>
       {props.children}
     </AppDataContext.Provider>
   )
