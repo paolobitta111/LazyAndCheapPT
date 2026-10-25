@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { SessionCard } from '../components/SessionCard'
 import { ExerciseRow } from '../components/ExerciseRow'
 import { Timer } from '../components/Timer'
@@ -68,6 +69,7 @@ export default function Today() {
           <p className="has-text-grey">
             {mockCardio.duration} · {mockCardio.distance} · {mockCardio.avgPace}
           </p>
+          <Link className="button is-link is-small mt-3" to="/cardio">Registra cardio</Link>
         </div>
       </section>
 
