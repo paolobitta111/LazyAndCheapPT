@@ -73,32 +73,24 @@ export default function WorkoutPlayer() {
 
   if (!session.workoutLog) {
     return (
-      <div className="container has-text-centered">
-        <h1 className="title is-4">Avvio sessione...</h1>
+      <div>
+        <h1>Avvio sessione...</h1>
       </div>
     )
   }
 
   return (
-    <div className="container">
-      {/* Header */}
-      <div className="columns is-vcentered mb-5">
-        <div className="column">
-          <h1 className="title is-5">{planName}</h1>
-          <p className="has-text-grey">
-            {session.workoutLog.date} • {formatTime(session.timer.elapsedSec)}
-          </p>
-        </div>
-        <div className="column has-text-right">
-          <span className={`tag is-large ${session.isRunning ? 'is-success' : 'is-warning'}`}>
-            {session.isRunning ? '⏸ In corso' : '⏸ In pausa'}
-          </span>
-        </div>
+    <div>
+      <div>
+        <h1>{planName}</h1>
+        <p className="nums">
+          {session.workoutLog.date} • {formatTime(session.timer.elapsedSec)}
+        </p>
+        <p>{session.isRunning ? 'In corso' : 'In pausa'}</p>
       </div>
 
-      {/* Exercise sets */}
-      <div className="box mb-4">
-        <h2 className="title is-6">Esercizi</h2>
+      <div className="glass">
+        <h2>Esercizi</h2>
 
         {session.setLogs.length > 0 ? (
           session.setLogs.map((setLog, idx) => (
@@ -111,98 +103,59 @@ export default function WorkoutPlayer() {
             />
           ))
         ) : (
-          <p className="has-text-grey">Nessun set registrato ancora.</p>
+          <p>Nessun set registrato ancora.</p>
         )}
 
-        {/* Add set form */}
-        <div className="columns is-vcentered">
-          <div className="column is-3">
-            <input
-              type="number"
-              className="input is-medium"
-              value={kg || ''}
-              onChange={(e) => setKg(Number(e.target.value))}
-              placeholder="kg"
-              min={0}
-              aria-label="Peso"
-            />
-          </div>
-          <div className="column is-3">
-            <input
-              type="number"
-              className="input is-medium"
-              value={reps || ''}
-              onChange={(e) => setReps(Number(e.target.value))}
-              placeholder="reps"
-              min={0}
-              aria-label="Ripetizioni"
-            />
-          </div>
-          <div className="column is-3">
-            <input
-              type="number"
-              className="input is-medium"
-              value={rpe || ''}
-              onChange={(e) => setRpe(Number(e.target.value))}
-              placeholder="RPE"
-              min={1}
-              max={10}
-              aria-label="RPE"
-            />
-          </div>
-          <div className="column is-3">
-            <button
-              className="button is-primary is-fullwidth is-medium"
-              onClick={handleAddSet}
-              aria-label="Aggiungi set"
-            >
-              ➕ Aggiungi Set
-            </button>
-          </div>
-        </div>
+        <input
+          type="number"
+          className="field"
+          value={kg || ''}
+          onChange={(e) => setKg(Number(e.target.value))}
+          placeholder="kg"
+          min={0}
+          aria-label="Peso"
+        />
+        <input
+          type="number"
+          className="field"
+          value={reps || ''}
+          onChange={(e) => setReps(Number(e.target.value))}
+          placeholder="reps"
+          min={0}
+          aria-label="Ripetizioni"
+        />
+        <input
+          type="number"
+          className="field"
+          value={rpe || ''}
+          onChange={(e) => setRpe(Number(e.target.value))}
+          placeholder="RPE"
+          min={1}
+          max={10}
+          aria-label="RPE"
+        />
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={handleAddSet}
+          aria-label="Aggiungi set"
+        >
+          Aggiungi Set
+        </button>
       </div>
 
-      {/* Recovery timer */}
-      <div className="box mb-4">
-        <h2 className="title is-6">⏱ Timer Recupero</h2>
-        <div className="columns is-vcentered">
-          <div className="column">
-            <span className="tag is-info is-medium">
-              {formatTime(session.remainingSec)}
-            </span>
-          </div>
-          <div className="column">
-            <div className="buttons">
-              <button
-                className="button is-info"
-                onClick={() => {
-                  session.recoveryTimer.start()
-                }}
-              >
-                ▶️ Avvia
-              </button>
-              <button
-                className="button is-warning"
-                onClick={() => session.recoveryTimer.pause()}
-              >
-                ⏸ Pausa
-              </button>
-              <button
-                className="button is-danger"
-                onClick={() => session.recoveryTimer.stop()}
-              >
-                ⏹ Stop
-              </button>
-            </div>
-          </div>
-        </div>
+      <div className="glass">
+        <h2>Timer Recupero</h2>
+        <span className="nums">{formatTime(session.remainingSec)}</span>
+        <button className="btn" type="button" onClick={() => session.recoveryTimer.start()}>Avvia</button>
+        <button className="btn" type="button" onClick={() => session.recoveryTimer.pause()}>Pausa</button>
+        <button className="btn" type="button" onClick={() => session.recoveryTimer.stop()}>Stop</button>
       </div>
 
-      {/* Session notes */}
-      <div className="box mb-4">
-        <h2 className="title is-6">📝 Note di sessione</h2>
+      <div className="glass">
+        <h2>Note di sessione</h2>
         <textarea
-          className="textarea"
+          className="field"
           placeholder="Note sulla sessione..."
           value={sessionNotes}
           onChange={(e) => setSessionNotes(e.target.value)}
@@ -210,17 +163,15 @@ export default function WorkoutPlayer() {
         />
       </div>
 
-      {/* Close session */}
-      <div className="has-text-centered mb-5">
-        <button
-          className="button is-danger is-medium is-fullwidth"
-          onClick={handleCloseSession}
-          disabled={isClosing}
-          aria-label="Chiudi sessione"
-        >
-          {isClosing ? 'Salvataggio...' : '🏁 Chiudi Sessione'}
-        </button>
-      </div>
+      <button
+        className="btn"
+        type="button"
+        onClick={handleCloseSession}
+        disabled={isClosing}
+        aria-label="Chiudi sessione"
+      >
+        {isClosing ? 'Salvataggio...' : 'Chiudi Sessione'}
+      </button>
     </div>
   )
 }

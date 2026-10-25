@@ -21,6 +21,11 @@ const pages = [
   'src/pages/Plans.tsx',
   'src/pages/Calendar.tsx',
   'src/pages/History.tsx',
+  'src/pages/WorkoutPlayer.tsx',
+  'src/pages/Cardio.tsx',
+  'src/pages/LlmBridge.tsx',
+  'src/pages/Settings.tsx',
+  'src/pages/NotFound.tsx',
 ]
 
 describe('content pages', () => {
@@ -33,8 +38,10 @@ describe('content pages', () => {
     }
   })
 
-  it('links Oggi to the LLM bridge', () => {
+  it('links Oggi and Impostazioni to the LLM bridge', () => {
     const today = readFileSync(resolve(root, 'src/pages/Today.tsx'), 'utf8')
+    const settings = readFileSync(resolve(root, 'src/pages/Settings.tsx'), 'utf8')
     expect(today).toContain('href="#/llm"')
+    expect(settings).toContain('href="#/llm"')
   })
 })

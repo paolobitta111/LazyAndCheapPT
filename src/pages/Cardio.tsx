@@ -59,82 +59,61 @@ export default function Cardio() {
   }
 
   return (
-    <div className="container">
-      <h1 className="title is-4">Cardio</h1>
-      <div className="field">
-        <label className="label">Sport</label>
-        <div className="select">
-          <select value={sport} onChange={(event) => setSport(event.target.value as Sport)}>
-            <option value="running">Corsa</option>
-            <option value="cycling">Bici</option>
-            <option value="other">Altro</option>
-          </select>
-        </div>
-      </div>
+    <div>
+      <h1>Cardio</h1>
+      <label>Sport</label>
+      <select className="field" value={sport} onChange={(event) => setSport(event.target.value as Sport)}>
+        <option value="running">Corsa</option>
+        <option value="cycling">Bici</option>
+        <option value="other">Altro</option>
+      </select>
 
-      <div className="columns">
-        <div className="column">
-          <label className="label">Durata (min)</label>
-          <input className="input" type="number" min={0} value={durationMin} onChange={(event) => setDurationMin(Number(event.target.value))} />
-        </div>
-        <div className="column">
-          <label className="label">Distanza (km)</label>
-          <input className="input" type="number" min={0} step={0.1} value={distanceKm} onChange={(event) => setDistanceKm(Number(event.target.value))} />
-        </div>
-      </div>
+      <label>Durata (min)</label>
+      <input className="field" type="number" min={0} value={durationMin} onChange={(event) => setDurationMin(Number(event.target.value))} />
+      <label>Distanza (km)</label>
+      <input className="field" type="number" min={0} step={0.1} value={distanceKm} onChange={(event) => setDistanceKm(Number(event.target.value))} />
 
-      <div className="field">
-        <label className="label">Note</label>
-        <textarea className="textarea" value={notes} onChange={(event) => setNotes(event.target.value)} />
-      </div>
+      <label>Note</label>
+      <textarea className="field" value={notes} onChange={(event) => setNotes(event.target.value)} />
 
-      <button className="button is-primary mb-5" type="button" onClick={saveFree}>Salva sessione libera</button>
+      <button className="btn btn-primary" type="button" onClick={saveFree}>Salva sessione libera</button>
 
-      <h2 className="title is-5">Segmenti</h2>
+      <h2>Segmenti</h2>
       {segments.map((segment, index) => (
-        <div className="box" key={index}>
-          <div className="select mb-2">
-            <select
-              value={segment.type}
-              onChange={(event) => updateSegment(index, { type: event.target.value as SegmentType })}
-            >
-              <option value="warmup">Riscaldamento</option>
-              <option value="interval">Intervallo</option>
-              <option value="recovery">Recupero</option>
-              <option value="main">Principale</option>
-            </select>
-          </div>
-          <div className="columns">
-            <div className="column">
-              <input
-                className="input"
-                type="number"
-                min={0}
-                value={segment.durationSec}
-                onChange={(event) => updateSegment(index, { durationSec: Number(event.target.value) })}
-                aria-label={`Durata segmento ${index + 1}`}
-              />
-            </div>
-            <div className="column">
-              <input
-                className="input"
-                type="number"
-                min={0}
-                step={0.1}
-                value={segment.distanceKm ?? 0}
-                onChange={(event) => updateSegment(index, { distanceKm: Number(event.target.value) })}
-                aria-label={`Distanza segmento ${index + 1}`}
-              />
-            </div>
-          </div>
+        <div className="glass" key={index}>
+          <select
+            className="field"
+            value={segment.type}
+            onChange={(event) => updateSegment(index, { type: event.target.value as SegmentType })}
+          >
+            <option value="warmup">Riscaldamento</option>
+            <option value="interval">Intervallo</option>
+            <option value="recovery">Recupero</option>
+            <option value="main">Principale</option>
+          </select>
+          <input
+            className="field"
+            type="number"
+            min={0}
+            value={segment.durationSec}
+            onChange={(event) => updateSegment(index, { durationSec: Number(event.target.value) })}
+            aria-label={`Durata segmento ${index + 1}`}
+          />
+          <input
+            className="field"
+            type="number"
+            min={0}
+            step={0.1}
+            value={segment.distanceKm ?? 0}
+            onChange={(event) => updateSegment(index, { distanceKm: Number(event.target.value) })}
+            aria-label={`Distanza segmento ${index + 1}`}
+          />
         </div>
       ))}
-      <div className="buttons">
-        <button className="button" type="button" onClick={() => setSegments((current) => [...current, emptySegment()])}>Aggiungi segmento</button>
-        <button className="button is-link" type="button" onClick={saveSegments}>Salva con segmenti</button>
-      </div>
-      <h2 className="title is-5 mt-5">GPX</h2>
-      <p className="help">Il file resta sul dispositivo. Nessuna mappa.</p>
+      <button className="btn" type="button" onClick={() => setSegments((current) => [...current, emptySegment()])}>Aggiungi segmento</button>
+      <button className="btn" type="button" onClick={saveSegments}>Salva con segmenti</button>
+      <h2>GPX</h2>
+      <p>Il file resta sul dispositivo. Nessuna mappa.</p>
       <input
         className="mb-3"
         type="file"
