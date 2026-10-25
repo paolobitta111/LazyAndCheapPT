@@ -1,13 +1,13 @@
 import { CalendarSlot } from '../components/CalendarSlot'
 
 const weekDays = [
-  { day: 'Lunedì', time: '08:00', plan: 'Petto + Tricipiti', hasPlan: true },
-  { day: 'Martedì', time: '18:00', plan: 'Schiena + Bicipiti', hasPlan: true },
-  { day: 'Mercoledì', time: '08:00', plan: 'Petto + Tricipiti', hasPlan: true },
-  { day: 'Giovedì', time: '', plan: '', hasPlan: false },
-  { day: 'Venerdì', time: '08:00', plan: 'Petto + Tricipiti', hasPlan: true },
-  { day: 'Sabato', time: '', plan: '', hasPlan: false },
-  { day: 'Domenica', time: '', plan: '', hasPlan: false },
+  { day: 'Lunedì', date: '21 ott', time: '08:00', plan: 'Petto + Tricipiti', hasPlan: true },
+  { day: 'Martedì', date: '22 ott', time: '18:00', plan: 'Schiena + Bicipiti', hasPlan: true },
+  { day: 'Mercoledì', date: '23 ott', time: '08:00', plan: 'Petto + Tricipiti', hasPlan: true },
+  { day: 'Giovedì', date: '24 ott', time: '', plan: '', hasPlan: false },
+  { day: 'Venerdì', date: '25 ott', time: '08:00', plan: 'Petto + Tricipiti', hasPlan: true },
+  { day: 'Sabato', date: '26 ott', time: '', plan: '', hasPlan: false },
+  { day: 'Domenica', date: '27 ott', time: '', plan: '', hasPlan: false },
 ] as const
 
 export default function Calendar() {
