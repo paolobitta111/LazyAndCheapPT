@@ -101,6 +101,15 @@
   }
 }
 
+.nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.ink-fallback {
+  background: #0b0b0d;
+  color: #f5f5f7;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .glass-pill {
     transition: none;

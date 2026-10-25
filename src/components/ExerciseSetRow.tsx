@@ -14,49 +14,34 @@ export function ExerciseSetRow({
   isCompleted,
 }: ExerciseSetRowProps) {
   return (
-    <div className={`box mb-2 ${isCompleted ? 'has-background-success-light' : ''}`}>
-      <div className="columns is-vcentered">
-        <div className="column is-2">
-          <span className="tag is-info is-medium">Set {index + 1}</span>
-        </div>
-        <div className="column is-3">
-          <input
-            type="number"
-            className="input is-small"
-            value={setLog.kg}
-            readOnly
-            placeholder="kg"
-            aria-label={`Set ${index + 1} peso`}
-          />
-        </div>
-        <div className="column is-3">
-          <input
-            type="number"
-            className="input is-small"
-            value={setLog.repCount}
-            readOnly
-            placeholder="reps"
-            aria-label={`Set ${index + 1} ripetizioni`}
-          />
-        </div>
-        <div className="column is-2">
-          {setLog.rpe && (
-            <span className="tag is-warning">
-              RPE {setLog.rpe}
-            </span>
-          )}
-        </div>
-        <div className="column is-2">
-          <button
-            className={`button is-small ${isCompleted ? 'is-success' : 'is-info'}`}
-            onClick={() => onToggleComplete(setLog)}
-            disabled={isCompleted}
-            aria-label={isCompleted ? 'Set completato' : 'Compluta set'}
-          >
-            {isCompleted ? '✅' : '⬜'}
-          </button>
-        </div>
-      </div>
+    <div className="glass">
+      <span>Set {index + 1}</span>
+      <input
+        type="number"
+        className="field"
+        value={setLog.kg}
+        readOnly
+        placeholder="kg"
+        aria-label={`Set ${index + 1} peso`}
+      />
+      <input
+        type="number"
+        className="field"
+        value={setLog.repCount}
+        readOnly
+        placeholder="reps"
+        aria-label={`Set ${index + 1} ripetizioni`}
+      />
+      {setLog.rpe ? <span className="nums">RPE {setLog.rpe}</span> : null}
+      <button
+        className="btn"
+        onClick={() => onToggleComplete(setLog)}
+        disabled={isCompleted}
+        aria-label={isCompleted ? 'Set completato' : 'Compluta set'}
+        type="button"
+      >
+        {isCompleted ? 'Fatto' : 'Segna'}
+      </button>
     </div>
   )
 }

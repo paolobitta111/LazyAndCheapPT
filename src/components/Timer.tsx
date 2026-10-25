@@ -12,7 +12,6 @@ export const Timer: FC<TimerProps> = ({ startedAt, targetEndAt }) => {
   const targetEnd = new Date(targetEndAt)
   const hasEnded = now >= targetEnd
 
-  // Update every second for live display
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000)
     return () => clearInterval(id)
@@ -31,19 +30,11 @@ export const Timer: FC<TimerProps> = ({ startedAt, targetEndAt }) => {
   }
 
   return (
-    <div className="box has-text-centered">
-      <p className={`title is-1 ${hasEnded ? 'has-text-danger' : 'has-text-primary'}`}>
-        {hasEnded ? '✅ Sessione Conclusa' : formatTime(hasEnded ? 0 : elapsed)}
-      </p>
-      {!hasEnded && (
-        <p className="has-text-grey is-size-7">
-          Target: {formatTime(remaining)} rimanenti
-        </p>
-      )}
-      <div className="buttons mt-3">
-        <button className="button is-warning is-small">⏸️ Pausa</button>
-        <button className="button is-danger is-small">⏹️ Fine</button>
-      </div>
+    <div className="glass">
+      <p className="nums">{hasEnded ? 'Sessione Conclusa' : formatTime(elapsed)}</p>
+      {!hasEnded ? <p>Target: {formatTime(remaining)} rimanenti</p> : null}
+      <button className="btn" type="button">Pausa</button>
+      <button className="btn" type="button">Fine</button>
     </div>
   )
 }
