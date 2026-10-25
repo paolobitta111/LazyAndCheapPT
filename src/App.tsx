@@ -6,6 +6,7 @@ import Plans from './pages/Plans'
 import Calendar from './pages/Calendar'
 import History from './pages/History'
 import NotFound from './pages/NotFound'
+import WorkoutPlayer from './pages/WorkoutPlayer'
 import { DataProvider } from './data/db'
 
 
@@ -54,6 +55,7 @@ function LayoutShell() {
           <Route path="/schede" element={<Plans />} />
           <Route path="/calendario" element={<Calendar />} />
           <Route path="/storico" element={<History />} />
+          <Route path="/workout/:planId" element={<WorkoutPlayer />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

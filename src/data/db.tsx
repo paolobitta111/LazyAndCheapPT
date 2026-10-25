@@ -19,8 +19,17 @@ import type {
 import type {
   TrainingPlanRepo,
   PlannedSessionRepo,
+  WorkoutLogRepo,
+  ExerciseLogRepo,
+  SetLogRepo,
 } from './repositories.ts'
-import { TrainingPlanRepoImpl, PlannedSessionRepoImpl } from './repositories.dexie'
+import {
+  TrainingPlanRepoImpl,
+  PlannedSessionRepoImpl,
+  WorkoutLogRepoImpl,
+  ExerciseLogRepoImpl,
+  SetLogRepoImpl,
+} from './repositories.dexie'
 
 // ---------------------------------------------------------------------------
 // Database class
@@ -68,6 +77,9 @@ export const db = new TrainingLogDB()
 export interface AppData {
   trainingPlanRepo: TrainingPlanRepo
   plannedSessionRepo: PlannedSessionRepo
+  workoutLogRepo: WorkoutLogRepo
+  exerciseLogRepo: ExerciseLogRepo
+  setLogRepo: SetLogRepo
 }
 
 const AppDataContext = createContext<AppData | null>(null)
@@ -76,9 +88,12 @@ export function DataProvider(props: { children: ReactNode }): React.ReactElement
   // Singleton repos — safe because React renders synchronously
   const trainingPlanRepo = new TrainingPlanRepoImpl()
   const plannedSessionRepo = new PlannedSessionRepoImpl()
+  const workoutLogRepo = new WorkoutLogRepoImpl()
+  const exerciseLogRepo = new ExerciseLogRepoImpl()
+  const setLogRepo = new SetLogRepoImpl()
 
   return (
-    <AppDataContext.Provider value={{ trainingPlanRepo, plannedSessionRepo }}>
+    <AppDataContext.Provider value={{ trainingPlanRepo, plannedSessionRepo, workoutLogRepo, exerciseLogRepo, setLogRepo }}>
       {props.children}
     </AppDataContext.Provider>
   )
