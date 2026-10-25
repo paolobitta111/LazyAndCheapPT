@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { HashRouter, Route, Routes, useNavigate, useLocation } from 'react-router-dom'
+import { Route, Routes, useNavigate, useLocation } from 'react-router-dom'
 import { BottomNav } from './components/BottomNav'
 import Today from './pages/Today'
 import Plans from './pages/Plans'
@@ -62,9 +62,5 @@ function LayoutShell() {
 }
 
 export default function App() {
-  return (
-    <HashRouter>
-      <LayoutShell />
-    </HashRouter>
-  )
+  return <LayoutShell />
 }

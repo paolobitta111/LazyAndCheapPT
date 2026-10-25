@@ -1,6 +1,9 @@
 import { render } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import App from '../App'
+
+const renderWithRouter = (ui: React.ReactElement) => render(<MemoryRouter>{ui}</MemoryRouter>)
 
 // Mock CSS imports to avoid Bulma parsing issues in jsdom
 vi.mock('../index.css', () => ({}))
@@ -14,7 +17,7 @@ vi.mock('../pages/NotFound', () => ({ default: () => <div data-testid="not-found
 
 describe('App', () => {
   it('renders the layout shell', () => {
-    const { container } = render(<App />)
+    const { container } = renderWithRouter(<App />)
     const html = container.innerHTML
     // Navbar should be present
     expect(html).toContain('LazyCheapCoach')
@@ -23,7 +26,7 @@ describe('App', () => {
   })
 
   it('renders bottom navigation', () => {
-    const { container } = render(<App />)
+    const { container } = renderWithRouter(<App />)
     const html = container.innerHTML
     expect(html).toContain('bottom-nav')
     expect(html).toContain('bottom-nav-item')
