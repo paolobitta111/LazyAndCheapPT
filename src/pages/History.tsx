@@ -31,33 +31,23 @@ export default function History() {
   )
 
   return (
-    <div className="container">
-      <h1 className="title is-4">Storico</h1>
-      <p className="help mb-3">Dati salvati solo su questo dispositivo.</p>
-      <div className="field">
-        <div className="select is-fullwidth">
-          <select value={String(days ?? 'all')} onChange={(event) => setDays(event.target.value === 'all' ? null : Number(event.target.value))}>
-            <option value="7">Ultima settimana</option>
-            <option value="30">Ultimo mese</option>
-            <option value="90">Ultimi 3 mesi</option>
-            <option value="all">Tutto</option>
-          </select>
-        </div>
-      </div>
-      <div className="field">
-        <div className="select is-fullwidth">
-          <select value={type} onChange={(event) => setType(event.target.value as 'all' | 'workout' | 'cardio')}>
-            <option value="all">Tutti</option>
-            <option value="workout">Workout</option>
-            <option value="cardio">Cardio</option>
-          </select>
-        </div>
-      </div>
-      <div className="field">
-        <input className="input" value={query} placeholder="Cerca note o scheda" onChange={(event) => setQuery(event.target.value)} />
-      </div>
-      {error && <p className="has-text-danger">{error}</p>}
-      {visible.length === 0 && <p className="has-text-grey">Nessun log nel filtro.</p>}
+    <div>
+      <h1>Storico</h1>
+      <p>Dati salvati solo su questo dispositivo.</p>
+      <select className="field" value={String(days ?? 'all')} onChange={(event) => setDays(event.target.value === 'all' ? null : Number(event.target.value))}>
+        <option value="7">Ultima settimana</option>
+        <option value="30">Ultimo mese</option>
+        <option value="90">Ultimi 3 mesi</option>
+        <option value="all">Tutto</option>
+      </select>
+      <select className="field" value={type} onChange={(event) => setType(event.target.value as 'all' | 'workout' | 'cardio')}>
+        <option value="all">Tutti</option>
+        <option value="workout">Workout</option>
+        <option value="cardio">Cardio</option>
+      </select>
+      <input className="field" value={query} placeholder="Cerca note o scheda" onChange={(event) => setQuery(event.target.value)} />
+      {error && <p>{error}</p>}
+      {visible.length === 0 && <p>Nessun log nel filtro.</p>}
       {visible.map((item) => (
         <HistoryItem
           key={item.id}

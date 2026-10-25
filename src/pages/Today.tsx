@@ -33,16 +33,16 @@ const mockCardio = {
 
 export default function Today() {
   return (
-    <div className="container">
-      <h1 className="title is-4 mb-0">{today.charAt(0).toUpperCase() + today.slice(1)}</h1>
+    <div>
+      <h1>{today.charAt(0).toUpperCase() + today.slice(1)}</h1>
+      <p><a href="#/llm">Apri il ponte LLM</a></p>
 
-      {/* Sessione in corso */}
-      <section className="mb-5">
-        <h2 className="title is-6">🏋️ Sessione</h2>
+      <section>
+        <h2>Sessione</h2>
         <SessionCard title={mockSession.title} status="active" duration={mockSession.duration}>
-          <ul className="list">
-            {mockExercises.map((exercise, idx) => (
-              <li key={idx}>
+          <ul>
+            {mockExercises.map((exercise) => (
+              <li key={exercise.name}>
                 <ExerciseRow
                   name={exercise.name}
                   sets={exercise.sets}
@@ -55,64 +55,33 @@ export default function Today() {
         </SessionCard>
       </section>
 
-      {/* Timer */}
-      <section className="mb-5">
-        <h2 className="title is-6">⏱️ Timer</h2>
+      <section>
+        <h2>Timer</h2>
         <Timer startedAt="2026-10-24T08:00:00Z" targetEndAt="2026-10-24T09:00:00Z" />
       </section>
 
-      {/* Cardio */}
-      <section className="mb-5">
-        <h2 className="title is-6">🏃 Cardio</h2>
-        <div className="box">
-          <p className="title is-5 mb-1">{mockCardio.type}</p>
-          <p className="has-text-grey">
-            {mockCardio.duration} · {mockCardio.distance} · {mockCardio.avgPace}
-          </p>
-          <Link className="button is-link is-small mt-3" to="/cardio">Registra cardio</Link>
-        </div>
+      <section className="glass">
+        <h2>Cardio</h2>
+        <p>{mockCardio.type}</p>
+        <p className="nums">
+          {mockCardio.duration} · {mockCardio.distance} · {mockCardio.avgPace}
+        </p>
+        <Link className="btn" to="/cardio">Registra cardio</Link>
       </section>
 
-      {/* Quick Add */}
-      <section className="mb-5">
-        <h2 className="title is-6">➕ Quick Add</h2>
-        <div className="field has-addons mb-3">
-          <div className="control is-expanded">
-            <input className="input" type="text" placeholder="Aggiungi esercizio..." />
-          </div>
-          <div className="control">
-            <button className="button is-primary">Aggiungi</button>
-          </div>
-        </div>
-        <div className="buttons">
-          <button className="button is-small is-info">+ Esercizio</button>
-          <button className="button is-small is-success">+ Cardio</button>
-        </div>
+      <section className="glass">
+        <h2>Quick Add</h2>
+        <input className="field" type="text" placeholder="Aggiungi esercizio..." />
+        <button className="btn btn-primary" type="button">Aggiungi</button>
+        <button className="btn" type="button">+ Esercizio</button>
+        <button className="btn" type="button">+ Cardio</button>
       </section>
 
-      {/* Riepilogo */}
-      <section>
-        <h2 className="title is-6">📊 Riepilogo</h2>
-        <div className="columns">
-          <div className="column is-one-third">
-            <div className="has-background-primary-dark p-3 has-text-centered">
-              <p className="is-size-3 has-text-white">{mockExercises.length}</p>
-              <p className="has-text-white has-text-small">Esercizi</p>
-            </div>
-          </div>
-          <div className="column is-one-third">
-            <div className="has-background-primary p-3 has-text-centered">
-              <p className="is-size-3 has-text-white">{mockSession.duration}</p>
-              <p className="has-text-white has-text-small">Durata</p>
-            </div>
-          </div>
-          <div className="column is-one-third">
-            <div className="has-background-success p-3 has-text-centered">
-              <p className="is-size-3 has-text-white">{mockCardio.distance}</p>
-              <p className="has-text-white has-text-small">Cardio</p>
-            </div>
-          </div>
-        </div>
+      <section className="glass">
+        <h2>Riepilogo</h2>
+        <p className="nums">{mockExercises.length} esercizi</p>
+        <p className="nums">{mockSession.duration}</p>
+        <p className="nums">{mockCardio.distance}</p>
       </section>
     </div>
   )

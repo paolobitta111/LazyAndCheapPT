@@ -90,16 +90,12 @@ export default function Calendar() {
   const slots = useCalendarWeek(plannedSessionRepo, trainingPlanRepo)
 
   return (
-    <div className="container">
-      <h1 className="title is-4">📅 Calendario</h1>
-
-      <div className="tabs is-boxed mb-4">
-        <ul>
-          <li className="is-active"><a>Settimana</a></li>
-          <li><a>Mese</a></li>
-        </ul>
+    <div>
+      <h1>Calendario</h1>
+      <div className="glass">
+        <span>Settimana</span>
+        <span>Mese</span>
       </div>
-
       <section>
         {slots.map((slot, idx) => (
           <CalendarSlot
