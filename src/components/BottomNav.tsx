@@ -1,31 +1,35 @@
 import type { FC } from 'react'
+import { NavIcon, type NavIconName } from './NavIcon'
 
 interface BottomNavProps {
   activeTab: string
   onNavigate: (tab: string) => void
 }
 
-const navItems = [
-  { id: '/', icon: '🏠', label: 'Oggi' },
-  { id: '/schede', icon: '📋', label: 'Schede' },
-  { id: '/calendario', icon: '📅', label: 'Cal' },
-  { id: '/storico', icon: '📊', label: 'Storico' },
-] as const
+const navItems: { id: string; icon: NavIconName; label: string }[] = [
+  { id: '/', icon: 'oggi', label: 'Oggi' },
+  { id: '/schede', icon: 'schede', label: 'Schede' },
+  { id: '/calendario', icon: 'calendario', label: 'Calendario' },
+  { id: '/storico', icon: 'storico', label: 'Storico' },
+  { id: '/impostazioni', icon: 'impostazioni', label: 'Impostazioni' },
+]
 
 export const BottomNav: FC<BottomNavProps> = ({ activeTab, onNavigate }) => (
-  <nav className="bottom-nav">
-    <div className="bottom-nav-inner">
-      {navItems.map((item) => (
+  <nav className="glass-bar bottom-nav" aria-label="Principale">
+    {navItems.map((item) => {
+      const active = activeTab === item.id
+      return (
         <button
           key={item.id}
-          className={`bottom-nav-item${activeTab === item.id ? ' active' : ''}`}
+          className={active ? 'active' : undefined}
           onClick={() => onNavigate(item.id)}
           type="button"
         >
-          <span className="bottom-nav-icon">{item.icon}</span>
-          <span className="bottom-nav-label">{item.label}</span>
+          {active ? <span className="glass-pill" aria-hidden="true" /> : null}
+          <NavIcon name={item.icon} filled={active} />
+          <span>{item.label}</span>
         </button>
-      ))}
-    </div>
+      )
+    })}
   </nav>
 )
