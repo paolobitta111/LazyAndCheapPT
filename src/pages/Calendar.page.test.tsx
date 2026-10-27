@@ -115,6 +115,9 @@ describe('Calendar page', () => {
 
     fireEvent.click(cell5)
     await waitFor(() => expect(view.getByRole('dialog', { name: 'Assegna scheda' })).toBeTruthy())
+    const dialog = view.getByRole('dialog', { name: 'Assegna scheda' })
+    expect(dialog.parentElement).toHaveClass('sheet-backdrop')
+    expect(dialog.querySelector('.grabber')).toBeTruthy()
     await waitFor(() => expect(view.getByRole('button', { name: 'Bici' })).toBeTruthy(), { timeout: 3000 })
     fireEvent.click(view.getByRole('button', { name: 'Bici' }))
 

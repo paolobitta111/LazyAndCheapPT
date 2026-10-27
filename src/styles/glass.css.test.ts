@@ -44,6 +44,7 @@ describe('glass tokens', () => {
     const css = read('src/styles/glass.css')
     for (const token of [
       '--fill: rgba(118, 118, 128, 0.24)',
+      'z-index: 60',
       '.sheet .group {',
       '.group .group {',
       'border-radius: var(--r-card) var(--r-card) 0 0',

@@ -4,14 +4,15 @@ export function AssignModal(props: {
   onClose: () => void
 }) {
   return (
-    <div className="day-modal-backdrop" style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 50 }} onClick={props.onClose}>
+    <div className="sheet-backdrop" onClick={props.onClose}>
       <div
         role="dialog"
         aria-label="Assegna scheda"
-        className="sheet day-modal"
-        style={{ width: 'min(92vw, 380px)', padding: '16px', margin: '16px' }}
+        className="sheet sheet-bottom"
+        style={{ width: 'min(92vw, 380px)', padding: '16px', overflowY: 'auto' }}
         onClick={(event) => event.stopPropagation()}
       >
+        <div className="grabber" aria-hidden="true" />
         <p className="t-foot" style={{ margin: '0 0 10px', color: 'var(--label-2)' }}>
           Assegna una scheda a questo giorno
         </p>
