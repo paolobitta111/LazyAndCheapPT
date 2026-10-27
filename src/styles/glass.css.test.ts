@@ -69,9 +69,12 @@ describe('glass tokens', () => {
     const restBlock = index.match(/\[data-scrolled="false"\] header\.glass-bar\s*\{[^}]*\}/)
     expect(restBlock).not.toBeNull()
     expect(restBlock?.[0]).toContain('background-image: none')
+    expect(restBlock?.[0]).toContain('background-color: transparent')
     expect(restBlock?.[0]).toContain('box-shadow: none')
     expect(restBlock?.[0]).toContain('border-color: transparent')
     expect(restBlock?.[0]).toContain('backdrop-filter: none')
+    const h1Block = index.match(/\.main-content h1\s*\{[^}]*\}/)
+    expect(h1Block?.[0]).toContain('line-height: 1.2')
   })
 
   it('drops Bulma and uses the system font', () => {

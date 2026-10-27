@@ -27,6 +27,7 @@ html, body, #root {
   margin: 0;
   font-size: 2.125rem;
   font-weight: 700;
+  line-height: 1.2;
   letter-spacing: -0.02em;
 }
 
@@ -104,6 +105,7 @@ header.glass-bar {
 /* a riposo l'header è trasparente: solo large title + glifo (pattern iOS) */
 .layout-shell[data-scrolled="false"] header.glass-bar {
   background-image: none;
+  background-color: transparent;
   border-color: transparent;
   box-shadow: none;
   -webkit-backdrop-filter: none;

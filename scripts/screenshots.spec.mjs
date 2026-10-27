@@ -24,16 +24,8 @@ for (const [path, name] of routes) {
   })
 }
 
-// at-rest viewport capture: verifies the bar-title stays hidden at scrollY=0
-// (fullPage captures scroll the page and flip data-scrolled=true)
-test('screenshot oggi at rest (viewport only)', async ({ page }) => {
-  await page.goto('http://localhost:5173/#/')
-  await page.waitForTimeout(600)
-  await page.screenshot({ path: resolve(OUT, 'oggi-at-rest.png') })
-})
-
 // at-rest header capture: verifies the quiet header (no capsule at scrollY=0,
-// large title + gear on the same row, pattern iOS)
+// large title + gear on the same row, bar-title hidden, pattern iOS)
 test('screenshot header at rest (viewport only)', async ({ page }) => {
   await page.goto('http://localhost:5173/#/')
   await page.waitForTimeout(600)
