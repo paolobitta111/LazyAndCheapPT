@@ -12,8 +12,6 @@ const routes = [
   ['/', 'oggi'],
   ['/schede', 'schede'],
   ['/calendario', 'calendario'],
-  ['/storico', 'storico'],
-  ['/cardio', 'cardio'],
   ['/llm', 'llm'],
   ['/impostazioni', 'impostazioni'],
 ]
@@ -32,6 +30,14 @@ test('screenshot oggi at rest (viewport only)', async ({ page }) => {
   await page.goto('http://localhost:5173/#/')
   await page.waitForTimeout(600)
   await page.screenshot({ path: resolve(OUT, 'oggi-at-rest.png') })
+})
+
+// at-rest header capture: verifies the quiet header (no capsule at scrollY=0,
+// large title + gear on the same row, pattern iOS)
+test('screenshot header at rest (viewport only)', async ({ page }) => {
+  await page.goto('http://localhost:5173/#/')
+  await page.waitForTimeout(600)
+  await page.screenshot({ path: resolve(OUT, 'oggi-riposo.png') })
 })
 
 const monthNamesIt = [

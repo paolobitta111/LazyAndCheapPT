@@ -39,7 +39,13 @@ export default function Settings() {
     <div>
       <h1>Impostazioni</h1>
       <div className="group">
-        <button className="group-row" aria-label="Scambio LLM" type="button" onClick={() => navigate('/llm')}>
+        <button
+          className="group-row"
+          aria-label="Scambio LLM"
+          type="button"
+          onClick={() => navigate('/llm')}
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', textAlign: 'left' }}
+        >
           <span className="t-body">Scambio LLM</span>
           <span className="nums" style={{ color: 'var(--label-2)' }}>›</span>
         </button>
