@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { BottomNav } from './BottomNav'
 
 describe('BottomNav', () => {
-  it('shows four tabs with a tinted active state', () => {
+  it('shows three tabs with a tinted active state', () => {
     const onNavigate = vi.fn()
     const { container } = render(<BottomNav activeTab="/" onNavigate={onNavigate} />)
     const buttons = [...container.querySelectorAll('button')]
@@ -12,8 +12,8 @@ describe('BottomNav', () => {
       'Oggi',
       'Schede',
       'Calendario',
-      'Impostazioni',
     ])
+    expect(container.textContent).not.toContain('Impostazioni')
 
     const oggi = buttons[0]
     expect(oggi).toHaveClass('active')

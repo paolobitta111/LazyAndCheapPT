@@ -33,7 +33,6 @@ describe('App chrome', () => {
       'Oggi',
       'Schede',
       'Calendario',
-      'Impostazioni',
     ])
 
     expect(container.querySelector('.glass-bar')).not.toBeNull()
