@@ -1,15 +1,15 @@
-import type { MockScheda } from '../pages/today-mock'
+import type { SessionBoxPlan } from './SessionBox'
 
 export function SubstituteCombo(props: {
-  schede: MockScheda[]
+  schede: SessionBoxPlan[]
   currentId: string | null
   open: boolean
   onToggle: () => void
-  onSelect: (id: string) => void
+  onSelect: (planId: string) => void
 }) {
-  const current = props.schede.find((scheda) => scheda.id === props.currentId) ?? null
+  const current = props.schede.find((scheda) => scheda.planId === props.currentId) ?? null
   const face = current ? `${current.name} · oggi` : 'Scegli scheda'
-  const choices = props.schede.filter((scheda) => scheda.id !== props.currentId)
+  const choices = props.schede.filter((scheda) => scheda.planId !== props.currentId)
 
   return (
     <div style={{ position: 'relative', flex: '1.35 1 0' }}>
@@ -34,9 +34,9 @@ export function SubstituteCombo(props: {
           <div style={{ overflowY: 'auto', maxHeight: '132px' }}>
             {choices.map((scheda) => (
               <button
-                key={scheda.id}
+                key={scheda.planId}
                 type="button"
-                onClick={() => props.onSelect(scheda.id)}
+                onClick={() => props.onSelect(scheda.planId)}
                 style={{
                   width: '100%',
                   textAlign: 'left',
