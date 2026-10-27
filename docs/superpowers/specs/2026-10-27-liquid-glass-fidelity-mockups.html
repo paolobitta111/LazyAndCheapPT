@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Liquid Glass directions — Oggi screen</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    background: #161618; color: #f5f5f7; padding: 2rem; line-height: 1.45;
+  }
+  h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: .25rem; }
+  .subtitle { color: #98989d; margin-bottom: 1.75rem; max-width: 60rem; }
+  .row { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: stretch; }
+  .col { width: 320px; display: flex; flex-direction: column; }
+  .col.pick { cursor: pointer; border-radius: 18px; padding: 8px; margin: -8px; transition: outline-color .15s; outline: 2px solid transparent; }
+  .col.pick:hover { outline-color: rgba(255,255,255,.18); }
+  .col.pick.selected { outline: 3px solid #0a84ff; }
+  .colname { font-size: .95rem; font-weight: 700; margin: .35rem 0 .1rem; }
+  .colname .tag { font-size: .62rem; font-weight: 700; letter-spacing: .08em; color: #161618; background: #98989d; border-radius: 4px; padding: 2px 6px; vertical-align: 2px; margin-right: 6px; }
+  .coldesc { font-size: .78rem; color: #98989d; margin-bottom: .5rem; min-height: 3.2em; }
+  .phone {
+    position: relative; width: 300px; height: 640px; margin-inline: auto;
+    border-radius: 42px; background: #000; border: 3px solid #3a3a3c;
+    overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,.55);
+  }
+  .screen { position: absolute; inset: 0; }
+  .island { position: absolute; top: 10px; left: 50%; translate: -50%; width: 84px; height: 24px; border-radius: 12px; background: #000; z-index: 40; }
+  .clock { position: absolute; top: 13px; left: 26px; font-size: .78rem; font-weight: 600; z-index: 40; color: #f5f5f7; }
+
+  /* shared content bits */
+  .sec { color: #98989d; font-size: .8rem; }
+  .badge { font-size: .68rem; font-weight: 600; letter-spacing: .04em; padding: 3px 9px; border-radius: 999px; }
+  .btnrow { display: flex; gap: 6px; align-items: center; }
+  .pill { border-radius: 999px; font-size: .78rem; font-weight: 500; padding: 7px 13px; text-align: center; }
+  .navlabel { font-size: .58rem; letter-spacing: .01em; }
+  .navbtn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; position: relative; z-index: 1; color: rgba(235,235,245,.55); font-size: .58rem; }
+  .navbtn.on { color: #fff; }
+  .navbar { position: absolute; left: 10px; right: 10px; bottom: 12px; height: 58px; border-radius: 26px; display: flex; align-items: stretch; padding: 4px; z-index: 30; }
+  .navbar svg, .topbar svg { display: block; }
+  .ic { width: 21px; height: 21px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+  .ic.fill { fill: currentColor; stroke: none; }
+
+  /* ============ CURRENT (reference) ============ */
+  .v-cur .screen { background: #0b0b0d; }
+  .v-cur .glassy {
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+    border: 1px solid rgba(255,255,255,.16);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 10px 28px rgba(0,0,0,.45);
+    backdrop-filter: blur(6px) saturate(160%); -webkit-backdrop-filter: blur(6px) saturate(160%);
+  }
+  .v-cur .topbar { position: absolute; top: 40px; left: 10px; right: 10px; height: 44px; border-radius: 24px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; z-index: 30; }
+  .v-cur .topbar .t { font-size: .9rem; font-weight: 600; }
+  .v-cur .topbar .llm { font-size: .7rem; background: #1c1c1e; border: 1px solid rgba(255,255,255,.16); border-radius: 999px; padding: 5px 10px; }
+  .v-cur .content { position: absolute; inset: 96px 10px 82px; display: flex; flex-direction: column; gap: 12px; }
+  .v-cur .date { font-size: .82rem; color: rgba(245,245,247,.6); }
+  .v-cur .card { border-radius: 16px; padding: 14px; backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); display: flex; flex-direction: column; gap: 8px; }
+  .v-cur .h-row { display: flex; justify-content: space-between; align-items: center; }
+  .v-cur .h3 { font-size: 1.3rem; font-weight: 400; }
+  .v-cur .badge { background: rgba(255,107,74,.18); color: #ffb4a2; text-transform: uppercase; font-size: .62rem; }
+  .v-cur .desc { font-size: .85rem; color: rgba(245,245,247,.55); }
+  .v-cur .pill { background: #1c1c1e; border: 1px solid rgba(255,255,255,.16); color: #f5f5f7; }
+  .v-cur .pill.pri { background: #f5f5f7; color: #0b0b0d; border-color: transparent; }
+  .v-cur .cubes { display: flex; gap: 8px; }
+  .v-cur .cube { flex: 1; border-radius: 16px; padding: 10px; display: flex; flex-direction: column; gap: 7px; min-height: 92px; justify-content: center; }
+  .v-cur .mrow { display: flex; align-items: center; gap: 7px; font-size: .8rem; font-variant-numeric: tabular-nums; }
+  .v-cur .mrow svg { width: 17px; height: 17px; }
+  .v-cur .navbar { com-mask: none; }
+
+  /* ============ SHARED for A / B / C: layered-content structure ============ */
+  .new .screen { background: #000; }
+  .glow-t { position: absolute; top: -80px; right: -60px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(10,132,255,.16), transparent 65%); }
+  .glow-b { position: absolute; bottom: -40px; left: -70px; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(255,107,74,.14), transparent 62%); }
+  .content { position: absolute; inset: 0 12px 70px; display: flex; flex-direction: column; gap: 12px; z-index: 1; }
+  .lt { font-size: 1.75rem; font-weight: 800; letter-spacing: -.02em; margin-top: 52px; }
+  .dateline { font-size: .85rem; color: rgba(235,235,245,.6); margin-top: -8px; }
+  .grp { background: #1c1c1e; border-radius: 24px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .hairline { height: 1px; background: rgba(84,84,88,.55); margin: 2px -16px; }
+  .h-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .tt { font-size: 1.2rem; font-weight: 700; letter-spacing: -.01em; }
+  .badge { background: rgba(255,107,74,.16); color: #ff8f73; }
+  .desc { font-size: .85rem; color: rgba(235,235,245,.6); }
+  .tbtn { color: #ff7a52; font-size: .85rem; font-weight: 500; background: none; border: 0; }
+  .tbtn + .tbtn { margin-left: 14px; }
+  .cta { background: #ff6b4a; color: #160b07; border: 0; border-radius: 999px; padding: 10px 16px; font-size: .9rem; font-weight: 600; align-self: stretch; text-align: center; margin-top: 4px; }
+  .metrics { background: #1c1c1e; border-radius: 24px; display: flex; }
+  .half { flex: 1; padding: 13px 14px; display: flex; flex-direction: column; gap: 3px; }
+  .half + .half { border-left: 1px solid rgba(84,84,88,.55); }
+  .big { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .sub { font-size: .72rem; color: rgba(235,235,245,.55); }
+  .minis { display: flex; gap: 10px; margin-top: 4px; }
+  .mini { font-size: .78rem; font-variant-numeric: tabular-nums; color: rgba(235,235,245,.85); display: flex; gap: 4px; align-items: center; }
+  .mini svg { width: 13px; height: 13px; }
+  .peek { position: absolute; left: 12px; right: 12px; bottom: -46px; height: 80px; border-radius: 24px 24px 0 0; background: #1c1c1e; padding: 14px 16px; z-index: 1; }
+  .peek .tt { font-size: 1rem; }
+  .peek .sub { margin-top: 4px; }
+  .peekshade { position: absolute; left: 0; right: 0; bottom: 58px; height: 60px; z-index: 20; background: linear-gradient(180deg, transparent, rgba(0,0,0,.55)); }
+  .topbar { position: absolute; top: 40px; left: 10px; right: 10px; height: 46px; border-radius: 22px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; z-index: 30; }
+  .topbar .lbl { font-size: .88rem; font-weight: 600; }
+  .topbar .chip { font-size: .72rem; border-radius: 999px; padding: 6px 11px; }
+
+  /* ============ A: chrome-only glass ============ */
+  .v-a .screen { background: #000; }
+  .v-a .glow-t, .v-a .glow-b { opacity: .35; }
+  .v-a .topbar, .v-a .navbar {
+    background: linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.05));
+    border: 1px solid rgba(255,255,255,.13);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 12px 30px rgba(0,0,0,.5);
+    backdrop-filter: blur(14px) saturate(150%); -webkit-backdrop-filter: blur(14px) saturate(150%);
+  }
+  .v-a .topbar .chip { background: rgba(255,255,255,.1); }
+  .v-a .navbtn.on { color: #ff7a52; }
+  .v-a .navbar .fill { fill: #ff7a52; stroke: none; }
+
+  /* ============ B: real material ============ */
+  .v-b .screen { background: #000; }
+  .v-b .topbar, .v-b .navbar {
+    background: linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.05));
+    border: 1px solid rgba(255,255,255,.14);
+    border-top-color: rgba(255,255,255,.32);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 12px 30px rgba(0,0,0,.45);
+    backdrop-filter: blur(18px) saturate(180%); -webkit-backdrop-filter: blur(18px) saturate(180%);
+  }
+  .v-b .topbar .chip { background: rgba(255,255,255,.12); box-shadow: inset 0 1px 0 rgba(255,255,255,.25); }
+  .v-b .navbtn.on { color: #ff7a52; }
+  .v-b .navbar .fill { fill: #ff7a52; stroke: none; }
+  .v-b .ltwrap { position: relative; }
+  .v-b .bigtitle { font-size: 2rem; font-weight: 800; letter-spacing: -.02em; margin-top: 58px; position: relative; z-index: 1; }
+  .v-b .underlt { margin-top: -18px; font-size: 1.4rem; font-weight: 800; opacity: .9; }
+
+  /* ============ C: refined in place ============ */
+  .v-c .screen { background: #0b0b0d; }
+  .v-c .glassy {
+    background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03));
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.24), 0 8px 24px rgba(0,0,0,.38);
+    backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%);
+  }
+  .v-c .topbar { position: absolute; top: 40px; left: 10px; right: 10px; height: 46px; border-radius: 22px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; z-index: 30; }
+  .v-c .topbar .t { font-size: .95rem; font-weight: 700; letter-spacing: -.01em; }
+  .v-c .topbar .llm { font-size: .72rem; background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.14); border-radius: 999px; padding: 6px 11px; }
+  .v-c .content { position: absolute; inset: 98px 12px 84px; display: flex; flex-direction: column; gap: 12px; }
+  .v-c .date { font-size: .8rem; color: rgba(235,235,245,.6); }
+  .v-c .card { border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 9px; }
+  .v-c .h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -.01em; }
+  .v-c .badge { background: rgba(255,107,74,.16); color: #ff8f73; }
+  .v-c .desc { font-size: .85rem; color: rgba(235,235,245,.6); }
+  .v-c .pill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); color: #f5f5f7; }
+  .v-c .pill.pri { background: #f5f5f7; color: #0b0b0d; border-color: transparent; }
+  .v-c .cubes { display: flex; gap: 10px; }
+  .v-c .cube { flex: 1; border-radius: 20px; padding: 12px; display: flex; flex-direction: column; gap: 8px; justify-content: center; min-height: 96px; }
+  .v-c .mrow { display: flex; align-items: center; gap: 8px; font-size: .8rem; font-variant-numeric: tabular-nums; }
+  .v-c .mrow svg { width: 17px; height: 17px; }
+
+  .note { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2c2c2e; color: #98989d; font-size: .8rem; max-width: 70rem; }
+  .note b { color: #d1d1d6; }
+</style>
+</head>
+<body>
+  <h1>Quale direzione per il linguaggio visivo Apple?</h1>
+  <p class="subtitle">La stessa schermata «Oggi» con contenuti reali dell'app, in quattro versioni. A e B seguono la separazione che Apple fa tra <b>strato funzionale</b> (navigazione, controlli — vetro) e <b>strato di contenuto</b> (dati, liste — materiali opachi). Crefinisce la struttura attuale senza cambiarla. Clicca il telefono della direzione che preferisci, oppure rispondi qui in chat.</p>
+
+  <div class="row">
+    <!-- ================= CURRENT ================= -->
+    <div class="col">
+      <div class="colname"><span class="tag">Oggi</span>Current implementation</div>
+      <div class="coldesc">Tutte le superfici sono vetro dello stesso tipo, a strati, su uno sfondo piatto: la sfocatura non ha nulla da rifrangere e la gerarchia si appiattisce.</div>
+      <div class="phone v-cur">
+        <div class="screen">
+          <div class="island"></div><div class="clock">9:41</div>
+          <div class="topbar glassy"><span class="t">Oggi</span><span class="llm">LLM</span></div>
+          <div class="content">
+            <div class="date">Martedì 27 ottobre</div>
+            <div class="card glassy">
+              <div class="h-row"><span class="h3">Full Body A</span><span class="badge">Previsto</span></div>
+              <div class="desc">Spinta · Trazioni · Gambe</div>
+              <div class="btnrow"><span class="pill">Salta</span><span class="pill">Sostituisci ▾</span><span class="pill pri">AI Check-In</span></div>
+            </div>
+            <div class="cubes">
+              <div class="cube glassy">
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M7 17h10a4 4 0 0 0 .4-8 6 6 0 0 0-11.5 1.6A3.5 3.5 0 0 0 7 17z"/></svg><span>18°</span></div>
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M3 9h9M3 13h12M3 17h8"/></svg><span>12 km/h</span></div>
+              </div>
+              <div class="cube glassy">
+                <div class="mrow"><span style="font-weight:700;width:17px;text-align:center">Z</span><span>7,5 h</span></div>
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.6-7 9-7 9z"/></svg><span>58</span></div>
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M4 15.2c1.4-.4 2.6-1.5 3.6-1.5h1.3l1.5-2.8h2.4l1.3 1.3h2.6c1.5 0 2.5.9 2.5 2v.8H5.2c-1 0-1.6-.7-1.2-1.8zM7 15.2v2.2M11 15.5v1.8"/></svg><span>8.432</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="navbar glassy">
+            <div class="navbtn on"><svg class="ic fill" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6" fill="#fff"/></svg><span class="navlabel">Oggi</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></svg><span class="navlabel">Schede</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 9.5h16M8.5 3.5v3M15.5 3.5v3"/></svg><span class="navlabel">Calendario</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 4.5v2.2M12 17.3v2.2M4.5 12h2.2M17.3 12h2.2M6.7 6.7l1.6 1.6M15.7 15.7l1.6 1.6M17.3 6.7l-1.6 1.6M8.3 15.7l-1.6 1.6"/></svg><span class="navlabel">Impostazioni</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= A ================= -->
+    <div class="col pick" data-choice="A" onclick="toggleSelect(this)">
+      <div class="colname">A — Strati funzionali</div>
+      <div class="coldesc">Vetro <b>solo</b> su navigazione e controlli flottanti; i contenuti diventano materiali opachi a strati (lista raggruppata iOS). Type scale iOS, raggi concentrici, un tint.</div>
+      <div class="phone v-a new">
+        <div class="screen">
+          <div class="island"></div><div class="clock">9:41</div>
+          <div class="glow-t"></div><div class="glow-b"></div>
+          <div class="content">
+            <div class="lt">Oggi</div>
+            <div class="dateline">Martedì 27 ottobre</div>
+            <div class="grp">
+              <div class="h-row"><span class="tt">Full Body A</span><span class="badge">Previsto</span></div>
+              <div class="desc">Spinta · Trazioni · Gambe</div>
+              <div class="hairline"></div>
+              <div class="btnrow"><button class="tbtn">Salta</button><button class="tbtn">Sostituisci</button></div>
+              <button class="cta">AI Check-In</button>
+            </div>
+            <div class="metrics">
+              <div class="half"><div class="big">18°</div><div class="sub">Vento 12 km/h</div></div>
+              <div class="half">
+                <div class="minis">
+                  <span class="mini"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.6-7 9-7 9z"/></svg>58</span>
+                  <span class="mini">7,5 h</span>
+                </div>
+                <div class="sub">8.432 passi</div>
+              </div>
+            </div>
+          </div>
+          <div class="peek"><div class="tt">Nuovo allenamento completato</div><div class="sub">Ieri · Upper B · 42 min</div></div>
+          <div class="peekshade"></div>
+          <div class="topbar"><span class="lbl"></span><span class="chip">LLM</span></div>
+          <div class="navbar">
+            <div class="navbtn on"><svg class="ic fill" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6"/></svg><span class="navlabel">Oggi</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></svg><span class="navlabel">Schede</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 9.5h16M8.5 3.5v3M15.5 3.5v3"/></svg><span class="navlabel">Calendario</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 4.5v2.2M12 17.3v2.2M4.5 12h2.2M17.3 12h2.2M6.7 6.7l1.6 1.6M15.7 15.7l1.6 1.6M17.3 6.7l-1.6 1.6M8.3 15.7l-1.6 1.6"/></svg><span class="navlabel">Impostazioni</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= B ================= -->
+    <div class="col pick" data-choice="B" onclick="toggleSelect(this)">
+      <div class="colname">B — Vetro reale</div>
+      <div class="coldesc">Struttura di A + materiali che si vedono: luce ambientale dietro, rifrazione vera nelle barre (blur su ciò che passa sotto), bordo speculare, titolo che scorre sotto la barra.</div>
+      <div class="phone v-b new">
+        <div class="screen">
+          <div class="island"></div><div class="clock">9:41</div>
+          <div class="glow-t"></div><div class="glow-b"></div>
+          <div class="content">
+            <div class="bigtitle">Oggi</div>
+            <div class="dateline" style="margin-top:-6px">Martedì 27 ottobre</div>
+            <div class="grp">
+              <div class="h-row"><span class="tt">Full Body A</span><span class="badge">Previsto</span></div>
+              <div class="desc">Spinta · Trazioni · Gambe</div>
+              <div class="hairline"></div>
+              <div class="btnrow"><button class="tbtn">Salta</button><button class="tbtn">Sostituisci</button></div>
+              <button class="cta">AI Check-In</button>
+            </div>
+            <div class="metrics">
+              <div class="half"><div class="big">18°</div><div class="sub">Vento 12 km/h</div></div>
+              <div class="half">
+                <div class="minis">
+                  <span class="mini"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.6-7 9-7 9z"/></svg>58</span>
+                  <span class="mini">7,5 h</span>
+                </div>
+                <div class="sub">8.432 passi</div>
+              </div>
+            </div>
+            <div class="grp" style="margin-bottom:-70px">
+              <div class="h-row"><span class="tt">Nuovo allenamento completato</span></div>
+              <div class="sub">Ieri · Upper B · 42 min · Volume 3.480 kg</div>
+            </div>
+          </div>
+          <div class="topbar"><span class="lbl"></span><span class="chip">LLM</span></div>
+          <div class="navbar">
+            <div class="navbtn on"><svg class="ic fill" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6"/></svg><span class="navlabel">Oggi</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></svg><span class="navlabel">Schede</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 9.5h16M8.5 3.5v3M15.5 3.5v3"/></svg><span class="navlabel">Calendario</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 4.5v2.2M12 17.3v2.2M4.5 12h2.2M17.3 12h2.2M6.7 6.7l1.6 1.6M15.7 15.7l1.6 1.6M17.3 6.7l-1.6 1.6M8.3 15.7l-1.6 1.6"/></svg><span class="navlabel">Impostazioni</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= C ================= -->
+    <div class="col pick" data-choice="C" onclick="toggleSelect(this)">
+      <div class="colname">C — Rifinitura in loco</div>
+      <div class="coldesc">Stessa architettura «tutto vetro», ma token sistemati: type scale coerente, raggi uniformi, ombre più morbide, badge e spaziature ordinati. Il massimo ottenibile senza cambiare struttura.</div>
+      <div class="phone v-c">
+        <div class="screen">
+          <div class="island"></div><div class="clock">9:41</div>
+          <div class="topbar glassy"><span class="t">Oggi</span><span class="llm">LLM</span></div>
+          <div class="content">
+            <div class="date">Martedì 27 ottobre</div>
+            <div class="card glassy">
+              <div class="h-row"><span class="h3">Full Body A</span><span class="badge">Previsto</span></div>
+              <div class="desc">Spinta · Trazioni · Gambe</div>
+              <div class="btnrow"><span class="pill">Salta</span><span class="pill">Sostituisci ▾</span><span class="pill pri">AI Check-In</span></div>
+            </div>
+            <div class="cubes">
+              <div class="cube glassy">
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M7 17h10a4 4 0 0 0 .4-8 6 6 0 0 0-11.5 1.6A3.5 3.5 0 0 0 7 17z"/></svg><span>18°</span></div>
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M3 9h9M3 13h12M3 17h8"/></svg><span>12 km/h</span></div>
+              </div>
+              <div class="cube glassy">
+                <div class="mrow"><span style="font-weight:700;width:17px;text-align:center">Z</span><span>7,5 h</span></div>
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 4.6-7 9-7 9z"/></svg><span>58</span></div>
+                <div class="mrow"><svg class="ic" viewBox="0 0 24 24"><path d="M4 15.2c1.4-.4 2.6-1.5 3.6-1.5h1.3l1.5-2.8h2.4l1.3 1.3h2.6c1.5 0 2.5.9 2.5 2v.8H5.2c-1 0-1.6-.7-1.2-1.8zM7 15.2v2.2M11 15.5v1.8"/></svg><span>8.432</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="navbar glassy">
+            <div class="navbtn on"><svg class="ic fill" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.6" fill="#fff"/></svg><span class="navlabel">Oggi</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10"/></svg><span class="navlabel">Schede</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 9.5h16M8.5 3.5v3M15.5 3.5v3"/></svg><span class="navlabel">Calendario</span></div>
+            <div class="navbtn"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 4.5v2.2M12 17.3v2.2M4.5 12h2.2M17.3 12h2.2M6.7 6.7l1.6 1.6M15.7 15.7l1.6 1.6M17.3 6.7l-1.6 1.6M8.3 15.7l-1.6 1.6"/></svg><span class="navlabel">Impostazioni</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="note"><b>Cosa guardare:</b> ① gerarchia — il titolo grande, i dati e le azioni si leggono in quest'ordine? ② materiali — dove c'è vetro e dove no, e il vetro ha qualcosa di reale dietro? ③ tipografia — scale coerente e tabular numbers sui dati. ④ geometria — raggi concentrici e spaziatura costante. ⑤ contenuto che scorre sotto le barre invece di fermarsi prima.</p>
+</body>
+</html>

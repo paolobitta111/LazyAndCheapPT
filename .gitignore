@@ -6,3 +6,4 @@ dist
 *.log
 .superpowers
 .worktrees
+test-results
