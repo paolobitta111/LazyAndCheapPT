@@ -72,72 +72,74 @@ export function MonthCalendar(props: {
     <div className="month-calendar" style={{ display: 'flex', flexDirection: 'column', gap: '10px', height: '100%' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button className="btn" type="button" aria-label="Mese precedente" onClick={props.onPrev}>‹</button>
-        <strong>{monthLabel}</strong>
+        <strong className="t-head">{monthLabel}</strong>
         <button className="btn" type="button" aria-label="Mese successivo" onClick={props.onNext}>›</button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', fontSize: '12px', color: 'var(--label-2)' }}>
-        {weekdayLetters.map((letter, index) => (
-          <span key={index}>{letter}</span>
-        ))}
-      </div>
+      <div className="month-group group">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', color: 'var(--label-2)' }} className="t-cap">
+          {weekdayLetters.map((letter, index) => (
+            <span key={index}>{letter}</span>
+          ))}
+        </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', flex: 1 }}>
-        {cells.map((day, index) => {
-          if (day === null) {
-            return <div key={`empty-${index}`} className="month-cell month-cell-empty" />
-          }
-          const marks = props.days.find((entry) => entry.day === day)?.marks ?? []
-          const isToday =
-            props.today !== null &&
-            props.today.year === props.year &&
-            props.today.monthIndex === props.monthIndex &&
-            props.today.day === day
-          const isSelected = props.selectedDay === day
-          return (
-            <button
-              key={day}
-              type="button"
-              className="month-cell"
-              aria-label={`${day} ${monthName}`}
-              data-today={isToday ? 'true' : undefined}
-              onClick={() => props.onSelectDay(day)}
-              style={{
-                position: 'relative',
-                aspectRatio: '1',
-                borderRadius: '12px',
-                border: 0,
-                background: isSelected ? 'rgba(255,107,74,.14)' : 'transparent',
-                color: 'var(--label)',
-                font: 'inherit',
-                fontSize: '13px',
-                fontVariantNumeric: 'tabular-nums',
-                boxShadow: isToday ? 'inset 0 0 0 1.5px var(--tint)' : undefined,
-              }}
-            >
-              <span style={{ position: 'absolute', top: '6px', left: '8px' }}>{day}</span>
-              {marks.map((mark, markIndex) => {
-                const color = sportDotColors[mark.sport ?? ''] ?? '#d0d0d4'
-                return <span key={markIndex} data-mark={mark.done ? 'done' : 'planned'} style={dotStyle(color, mark.done, markIndex)} />
-              })}
-            </button>
-          )
-        })}
-      </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', flex: 1 }}>
+          {cells.map((day, index) => {
+            if (day === null) {
+              return <div key={`empty-${index}`} className="month-cell month-cell-empty" />
+            }
+            const marks = props.days.find((entry) => entry.day === day)?.marks ?? []
+            const isToday =
+              props.today !== null &&
+              props.today.year === props.year &&
+              props.today.monthIndex === props.monthIndex &&
+              props.today.day === day
+            const isSelected = props.selectedDay === day
+            return (
+              <button
+                key={day}
+                type="button"
+                className="month-cell"
+                aria-label={`${day} ${monthName}`}
+                data-today={isToday ? 'true' : undefined}
+                onClick={() => props.onSelectDay(day)}
+                style={{
+                  position: 'relative',
+                  aspectRatio: '1',
+                  borderRadius: '12px',
+                  border: 0,
+                  background: isSelected ? 'rgba(255,107,74,.14)' : 'transparent',
+                  color: 'var(--label)',
+                  font: 'inherit',
+                  fontSize: '13px',
+                  fontVariantNumeric: 'tabular-nums',
+                  boxShadow: isToday ? 'inset 0 0 0 1.5px var(--tint)' : undefined,
+                }}
+              >
+                <span style={{ position: 'absolute', top: '6px', left: '8px' }}>{day}</span>
+                {marks.map((mark, markIndex) => {
+                  const color = sportDotColors[mark.sport ?? ''] ?? '#d0d0d4'
+                  return <span key={markIndex} data-mark={mark.done ? 'done' : 'planned'} style={dotStyle(color, mark.done, markIndex)} />
+                })}
+              </button>
+            )
+          })}
+        </div>
 
-      <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: 'var(--label-2)' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <i style={{ width: '7px', height: '7px', borderRadius: '50%', background: sportDotColors.strength }} />
-          Palestra
-        </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <i style={{ width: '7px', height: '7px', borderRadius: '50%', background: sportDotColors.running }} />
-          Corsa
-        </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <i style={{ width: '7px', height: '7px', borderRadius: '50%', background: sportDotColors.cycling }} />
-          Bici
-        </span>
+        <div style={{ display: 'flex', gap: '12px', color: 'var(--label-2)' }} className="t-cap">
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <i style={{ width: '7px', height: '7px', borderRadius: '50%', background: sportDotColors.strength }} />
+            Palestra
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <i style={{ width: '7px', height: '7px', borderRadius: '50%', background: sportDotColors.running }} />
+            Corsa
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <i style={{ width: '7px', height: '7px', borderRadius: '50%', background: sportDotColors.cycling }} />
+            Bici
+          </span>
+        </div>
       </div>
     </div>
   )

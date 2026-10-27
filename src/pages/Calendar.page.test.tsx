@@ -2,7 +2,7 @@ import { fireEvent, render, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { beforeEach, describe, expect, it } from 'vitest'
 import Calendar from './Calendar'
-import { buildMonthCells, monthNames } from '../components/MonthCalendar'
+import { buildMonthCells, monthNames, MonthCalendar } from '../components/MonthCalendar'
 import { DataProvider, db } from '../data/db'
 import { weekdayIndex } from '../services/planning.service'
 import type { TrainingPlan } from '../models/entities'
@@ -50,6 +50,27 @@ describe('Calendar page', () => {
     expect(cells[0]).toBeNull()
     expect(cells[3]).toBe(1)
     expect(cells[33]).toBe(31)
+  })
+
+  it('renders the grid inside the inset group', () => {
+    const view = render(
+      <MonthCalendar
+        year={2026}
+        monthIndex={9}
+        days={[]}
+        today={null}
+        selectedDay={null}
+        onSelectDay={() => undefined}
+        onPrev={() => undefined}
+        onNext={() => undefined}
+      />,
+    )
+    const grp = view.container.querySelector('.month-group')
+    expect(grp).not.toBeNull()
+    expect(grp).toHaveClass('group')
+    expect(grp?.querySelector('button[aria-label^="1 "]')).toBeTruthy()
+    const head = view.getByText('Ottobre 2026')
+    expect(grp?.contains(head)).toBe(false)
   })
 
   it('shows done and planned marks on assigned days and opens the summary', async () => {
