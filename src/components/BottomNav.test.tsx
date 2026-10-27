@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { BottomNav } from './BottomNav'
 
 describe('BottomNav', () => {
-  it('shows four glass tabs and a droplet only on the active one', () => {
+  it('shows four tabs with a tinted active state', () => {
     const onNavigate = vi.fn()
     const { container } = render(<BottomNav activeTab="/" onNavigate={onNavigate} />)
     const buttons = [...container.querySelectorAll('button')]
@@ -17,8 +17,7 @@ describe('BottomNav', () => {
 
     const oggi = buttons[0]
     expect(oggi).toHaveClass('active')
-    expect(oggi.querySelector('.glass-pill')).not.toBeNull()
-    expect(buttons[1].querySelector('.glass-pill')).toBeNull()
+    expect(oggi.querySelector('.glass-pill')).toBeNull()
     expect(container.querySelector('nav')).toHaveClass('glass-bar')
     expect(container.textContent).not.toMatch(/[\u{1F300}-\u{1FAFF}]/u)
     expect(buttons.some((button) => button.textContent?.includes('LLM'))).toBe(false)

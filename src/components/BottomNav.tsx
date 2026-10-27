@@ -24,7 +24,6 @@ export const BottomNav: FC<BottomNavProps> = ({ activeTab, onNavigate }) => (
           onClick={() => onNavigate(item.id)}
           type="button"
         >
-          {active ? <span className="glass-pill" aria-hidden="true" /> : null}
           <NavIcon name={item.icon} filled={active} />
           <span>{item.label}</span>
         </button>
