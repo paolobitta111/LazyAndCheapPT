@@ -99,6 +99,8 @@ export class TrainingPlanRepoImpl implements TrainingPlanRepo {
       sport: existing.sport,
       objective: existing.objective,
       notes: existing.notes,
+      plannedSessions: existing.plannedSessions,
+      dates: existing.dates,
     }
     return this.create(duplicate)
   }

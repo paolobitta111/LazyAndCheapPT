@@ -40,6 +40,8 @@ export class TrainingPlanService {
       sport: (raw.sport as string) ?? undefined,
       objective: (raw.objective as string) ?? undefined,
       notes: (raw.notes as string) ?? undefined,
+      plannedSessions: (raw.plannedSessions as CreateTrainingPlanInput['plannedSessions']) ?? undefined,
+      dates: (raw.dates as string[]) ?? undefined,
     }
   }
 
@@ -95,6 +97,8 @@ export class TrainingPlanService {
       sport: updates.sport ?? existing.sport,
       objective: updates.objective ?? existing.objective,
       notes: updates.notes ?? existing.notes,
+      plannedSessions: updates.plannedSessions ?? existing.plannedSessions,
+      dates: updates.dates ?? existing.dates,
     }
     return this.repo.create(input)
   }

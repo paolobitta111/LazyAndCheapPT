@@ -27,6 +27,12 @@ export interface TrainingExercise {
 
 export type TrainingPlanStatus = 'draft' | 'active' | 'archived'
 
+/** Weekly recurrence rule: Monday=1 … Sunday=7. */
+export interface PlannedSessionRule {
+  dayOfWeek: number
+  order: number
+}
+
 export interface TrainingPlan extends Entity {
   name: string
   description: string
@@ -36,6 +42,10 @@ export interface TrainingPlan extends Entity {
   sport?: string
   objective?: string
   notes?: string
+  /** Weekly recurrence rules (Monday=1 … Sunday=7). */
+  plannedSessions?: PlannedSessionRule[]
+  /** Specific dates ('YYYY-MM-DD', local time) this plan is assigned to. */
+  dates?: string[]
   archivedAt?: Date
 }
 
@@ -117,6 +127,8 @@ export interface CardioLog extends Entity {
   calories?: number
   notes?: string
   segments?: CardioSegment[]
+  /** Optional link to the scheda this cardio session fulfilled. */
+  planId?: string
 }
 
 export interface CardioSegment {

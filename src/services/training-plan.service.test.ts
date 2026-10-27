@@ -126,4 +126,42 @@ describe('TrainingPlanService', () => {
     expect(archived.status).toBe('archived')
     expect(archived.archivedAt).toBeDefined()
   })
+
+  it('maps plannedSessions and dates from raw JSON', async () => {
+    const created = await service.createFromJson({
+      ...validPlan,
+      plannedSessions: [{ dayOfWeek: 2, order: 1 }],
+      dates: ['2026-11-03'],
+    })
+    expect(created.plannedSessions).toEqual([{ dayOfWeek: 2, order: 1 }])
+    expect(created.dates).toEqual(['2026-11-03'])
+  })
+
+  it('update preserves plannedSessions and dates not in updates', async () => {
+    const rules = [{ dayOfWeek: 3, order: 2 }]
+    const dates = ['2026-12-01']
+    ;(service['repo'].get as ReturnType<typeof vi.fn>).mockResolvedValue({
+      id: 'plan-1',
+      name: 'Test Plan',
+      description: 'Test',
+      exercises: [],
+      version: 1,
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      plannedSessions: rules,
+      dates,
+    } as TrainingPlan)
+
+    const updated = await service.update('plan-1', { name: 'X' })
+    expect(updated.name).toBe('X')
+    expect(updated.plannedSessions).toEqual(rules)
+    expect(updated.dates).toEqual(dates)
+  })
+
+  it('rejects a date that is not YYYY-MM-DD', async () => {
+    await expect(
+      service.createFromJson({ ...validPlan, dates: ['3 nov'] }),
+    ).rejects.toThrow('Validation failed')
+  })
 })
