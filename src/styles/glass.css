@@ -72,6 +72,7 @@ body {
   border: 0;
   border-radius: 0;
   padding: 0.75rem 0;
+  color: inherit;
 }
 
 .group-row + .group-row {
@@ -223,6 +224,7 @@ body {
 
 .sheet .group {
   border-radius: var(--r-inner);
+  background: transparent;
 }
 
 .sheet-backdrop {

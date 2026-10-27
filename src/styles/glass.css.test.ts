@@ -59,6 +59,9 @@ describe('glass tokens', () => {
       expect(block).not.toBeNull()
       expect(block?.[0]).not.toContain('transition')
     }
+
+    expect(css).toMatch(/\.sheet \.group\s*\{[^}]*background:\s*transparent/)
+    expect(css).toMatch(/\.group-row\s*\{[^}]*color:\s*inherit/)
   })
 
   it('drops Bulma and uses the system font', () => {
