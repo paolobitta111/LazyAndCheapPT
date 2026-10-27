@@ -12,7 +12,7 @@ import LlmBridge from './pages/LlmBridge'
 import Settings from './pages/Settings'
 import { DataProvider } from './data/db'
 
-const tabIds = new Set(['/', '/schede', '/calendario', '/storico', '/impostazioni'])
+const tabIds = new Set(['/', '/schede', '/calendario', '/impostazioni'])
 
 export function pageTitle(pathname: string): string {
   if (pathname === '/') return 'Oggi'
@@ -40,6 +40,7 @@ function LayoutShell() {
     <div className="layout-shell">
       <header className="glass-bar">
         <h1>{pageTitle(location.pathname)}</h1>
+        <button className="btn" type="button" onClick={() => navigate('/llm')}>LLM</button>
       </header>
       <main className="main-content" role="main">
         <Routes>

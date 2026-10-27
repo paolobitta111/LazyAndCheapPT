@@ -1,13 +1,8 @@
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { formatToday } from './today-mock'
 import { SessionCard } from '../components/SessionCard'
 import { ExerciseRow } from '../components/ExerciseRow'
 import { Timer } from '../components/Timer'
-
-const today = new Date().toLocaleDateString('it-IT', {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long',
-})
 
 const mockSession = {
   title: 'Petto + Tricipiti',
@@ -32,11 +27,11 @@ const mockCardio = {
 }
 
 export default function Today() {
+  const navigate = useNavigate()
+
   return (
     <div>
-      <h1>{today.charAt(0).toUpperCase() + today.slice(1)}</h1>
-      <p><a href="#/llm">Apri il ponte LLM</a></p>
-
+      <p className="today-date">{formatToday()}</p>
       <section>
         <h2>Sessione</h2>
         <SessionCard title={mockSession.title} status="active" duration={mockSession.duration}>
@@ -66,7 +61,7 @@ export default function Today() {
         <p className="nums">
           {mockCardio.duration} · {mockCardio.distance} · {mockCardio.avgPace}
         </p>
-        <Link className="btn" to="/cardio">Registra cardio</Link>
+        <button className="btn" type="button" onClick={() => navigate('/cardio')}>Registra cardio</button>
       </section>
 
       <section className="glass">
@@ -77,7 +72,7 @@ export default function Today() {
         <button className="btn" type="button">+ Cardio</button>
       </section>
 
-      <section className="glass">
+      <section className="glass metrics">
         <h2>Riepilogo</h2>
         <p className="nums">{mockExercises.length} esercizi</p>
         <p className="nums">{mockSession.duration}</p>

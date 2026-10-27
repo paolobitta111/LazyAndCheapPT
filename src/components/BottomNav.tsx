@@ -10,7 +10,6 @@ const navItems: { id: string; icon: NavIconName; label: string }[] = [
   { id: '/', icon: 'oggi', label: 'Oggi' },
   { id: '/schede', icon: 'schede', label: 'Schede' },
   { id: '/calendario', icon: 'calendario', label: 'Calendario' },
-  { id: '/storico', icon: 'storico', label: 'Storico' },
   { id: '/impostazioni', icon: 'impostazioni', label: 'Impostazioni' },
 ]
 

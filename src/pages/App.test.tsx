@@ -20,15 +20,30 @@ function renderAt(path: string) {
 }
 
 describe('App chrome', () => {
-  it('shows an ink title capsule and five tabs on Oggi', () => {
+  it('shows an ink title capsule and four tabs on Oggi', () => {
     const { container } = renderAt('/')
     const title = container.querySelector('header.glass-bar')
-    expect(title?.textContent).toContain('Oggi')
+    expect(container.querySelector('header h1')?.textContent).toBe('Oggi')
+    expect(container.querySelector('header button')?.textContent).toBe('LLM')
+    expect([...container.querySelectorAll('nav button')].map((button) => button.textContent?.trim())).toEqual([
+      'Oggi',
+      'Schede',
+      'Calendario',
+      'Impostazioni',
+    ])
+    expect(title?.querySelector('button')?.textContent).toBe('LLM')
+    expect(container.textContent).toContain('Oggi')
     expect(container.textContent).toContain('Impostazioni')
     expect(container.querySelector('.glass-bar')).not.toBeNull()
     expect(container.innerHTML).not.toContain('navbar')
     expect(container.innerHTML).not.toContain('bottom-nav')
-    expect(title?.innerHTML ?? '').not.toContain('href="#/llm"')
+    expect(title?.innerHTML ?? '').not.toContain('href=')
+  })
+
+  it('still renders History at /storico', () => {
+    const { container } = renderAt('/storico')
+    expect(container.textContent).toContain('History Page')
+    expect(container.querySelector('button.active')).toBeNull()
   })
 
   it('does not mark a tab active on the LLM route', () => {

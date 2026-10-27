@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { BottomNav } from './BottomNav'
 
 describe('BottomNav', () => {
-  it('shows five glass tabs and a droplet only on the active one', () => {
+  it('shows four glass tabs and a droplet only on the active one', () => {
     const onNavigate = vi.fn()
     const { container } = render(<BottomNav activeTab="/" onNavigate={onNavigate} />)
     const buttons = [...container.querySelectorAll('button')]
@@ -12,7 +12,6 @@ describe('BottomNav', () => {
       'Oggi',
       'Schede',
       'Calendario',
-      'Storico',
       'Impostazioni',
     ])
 
