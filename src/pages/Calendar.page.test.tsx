@@ -43,10 +43,12 @@ describe('Calendar page', () => {
     expect(getByRole('dialog').textContent).toContain('32 min · 5,1 km')
     expect(getByText('Ginocchio ok. Ritmo comodo.')).toBeTruthy()
     expect(getByText('Venerdì 23 ottobre')).toBeTruthy()
+    expect(day23.style.background).not.toBe('transparent')
 
     const backdrop = container.querySelector('.day-modal-backdrop') as HTMLElement
     fireEvent.click(backdrop)
     expect(queryByRole('dialog')).toBeNull()
+    expect(day23.style.background).toBe('transparent')
   })
 
   it('keeps the October dots after month navigation', () => {

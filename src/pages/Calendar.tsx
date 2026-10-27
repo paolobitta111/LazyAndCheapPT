@@ -134,6 +134,7 @@ export default function Calendar() {
         monthIndex={monthIndex}
         sessions={sessions}
         today={today}
+        selectedDay={selectedDay}
         onSelectDay={(day) => {
           if (sessions.some((session) => session.day === day)) setSelectedDay(day)
         }}

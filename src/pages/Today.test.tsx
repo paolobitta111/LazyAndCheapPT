@@ -32,6 +32,12 @@ describe('Today', () => {
     const openCombo = container.querySelector('.substitute-combo') as HTMLElement
     expect(openCombo.style.maxHeight).toBe('132px')
     expect(openCombo.style.position).toBe('absolute')
+    expect(openCombo.style.border).not.toBe('')
+    expect(openCombo.style.borderRadius).not.toBe('')
+    expect(openCombo.style.background).not.toBe('')
+    const choiceButton = getByRole('button', { name: 'Palestra giorno 1' }) as HTMLElement
+    expect(choiceButton.style.background).not.toBe('')
+    expect(choiceButton.style.color).not.toBe('')
 
     fireEvent.click(getByRole('button', { name: 'Palestra giorno 1' }))
     expect(getByRole('heading', { name: 'Palestra giorno 1' })).toBeTruthy()

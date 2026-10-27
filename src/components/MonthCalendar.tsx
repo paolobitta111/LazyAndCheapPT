@@ -50,6 +50,7 @@ export function MonthCalendar(props: {
   monthIndex: number
   sessions: MockDaySession[]
   today: { year: number; monthIndex: number; day: number } | null
+  selectedDay: number | null
   onSelectDay: (day: number) => void
   onPrev: () => void
   onNext: () => void
@@ -86,6 +87,7 @@ export function MonthCalendar(props: {
             props.today.year === props.year &&
             props.today.monthIndex === props.monthIndex &&
             props.today.day === day
+          const isSelected = props.selectedDay === day
           return (
             <button
               key={day}
@@ -99,7 +101,7 @@ export function MonthCalendar(props: {
                 aspectRatio: '1',
                 borderRadius: '12px',
                 border: 0,
-                background: 'transparent',
+                background: isSelected ? 'rgba(255,255,255,.12)' : 'transparent',
                 color: '#f5f5f7',
                 font: 'inherit',
                 fontSize: '13px',
