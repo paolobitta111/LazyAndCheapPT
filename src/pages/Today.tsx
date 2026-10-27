@@ -153,6 +153,13 @@ export default function Today() {
         open={checkIn !== null}
         label={checkIn?.label ?? ''}
         promptLabel={checkIn?.promptLabel ?? ''}
+        metrics={{
+          sleep: health.sleep,
+          restingHr: health.restingHr,
+          steps: health.steps,
+          tempC: weather.tempC,
+          wind: weather.wind,
+        }}
         onClose={() => setCheckIn(null)}
       />
     </div>

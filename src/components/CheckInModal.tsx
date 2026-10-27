@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { buildCheckInPrompt } from '../pages/today-mock'
+import {
+  buildCheckInPrompt,
+  buildCheckInSystemPrompt,
+  type CheckInMetrics,
+} from '../services/llm-prompts'
+import { chatWithLocalLlm, loadLocalLlmConfig, type ChatMessage as LlmChatMessage } from '../services/local-llm'
 
 interface ChatMessage {
   role: 'user' | 'assistant'
@@ -10,6 +15,7 @@ export function CheckInModal(props: {
   open: boolean
   label: string
   promptLabel: string
+  metrics: CheckInMetrics
   onClose: () => void
 }) {
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -28,9 +34,29 @@ export function CheckInModal(props: {
   function send() {
     const text = draft.trim()
     if (!text) return
-    setMessages((previous) => [...previous, { role: 'user', text }])
+    const userMessage: ChatMessage = { role: 'user', text }
+    setMessages((previous) => [...previous, userMessage])
     setDraft('')
-    setOffline(true)
+    void replyTo(userMessage)
+  }
+
+  async function replyTo(userMessage: ChatMessage) {
+    const config = loadLocalLlmConfig()
+    if (!config.enabled || !config.endpoint) {
+      setOffline(true)
+      return
+    }
+    const history: LlmChatMessage[] = [
+      { role: 'system', content: buildCheckInSystemPrompt(props.promptLabel, props.metrics) },
+      ...messages.map((message) => ({ role: message.role, content: message.text })),
+      { role: 'user', content: userMessage.text },
+    ]
+    try {
+      const content = await chatWithLocalLlm(config, history)
+      setMessages((previous) => [...previous, { role: 'assistant', text: content }])
+    } catch {
+      setOffline(true)
+    }
   }
 
   async function copyPrompt(text: string): Promise<boolean> {

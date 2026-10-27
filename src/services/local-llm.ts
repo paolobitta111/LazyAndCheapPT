@@ -55,3 +55,32 @@ export async function testLocalLlm(
     clearTimeout(timer)
   }
 }
+
+// ---------------------------------------------------------------------------
+// Chat (OpenAI-compatible /chat/completions)
+// ---------------------------------------------------------------------------
+
+export interface ChatMessage {
+  role: 'system' | 'user' | 'assistant'
+  content: string
+}
+
+export async function chatWithLocalLlm(
+  config: LocalLlmConfig,
+  messages: ChatMessage[],
+  fetchImpl: typeof fetch = fetch,
+): Promise<string> {
+  if (!config.enabled) throw new Error('Provider locale disabilitato')
+  if (!config.endpoint) throw new Error('Endpoint mancante')
+  const url = `${config.endpoint.replace(/\/$/, '')}/chat/completions`
+  const response = await fetchImpl(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: config.model, messages }),
+  })
+  if (!response.ok) throw new Error(`HTTP ${response.status}`)
+  const data = (await response.json()) as { choices?: { message?: { content?: string } }[] }
+  const content = data.choices?.[0]?.message?.content
+  if (!content) throw new Error('Risposta senza contenuto')
+  return content
+}

@@ -1,6 +1,6 @@
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import Today from './Today'
 import { DataProvider, db } from '../data/db'
 import { dateKey, weekdayIndex } from '../services/planning.service'
@@ -36,6 +36,12 @@ function renderToday() {
 
 beforeEach(async () => {
   await Promise.all(db.tables.map((table) => table.clear()))
+  localStorage.clear()
+  vi.unstubAllGlobals()
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
 })
 
 describe('Today on real data', () => {
@@ -108,5 +114,43 @@ describe('Today on real data', () => {
       const rows = await db.plannedSessions.where('date').equals(today).toArray()
       expect(rows.find((row) => row.planId === 'a')?.status).toBe('planned')
     })
+  })
+
+  it('chats with the local model when configured', async () => {
+    await seedPlan({ id: 'a', name: 'Corsa', plannedSessions: rule })
+    localStorage.setItem('lcc.localLlm', JSON.stringify({ enabled: true, endpoint: 'http://x/v1', model: 'm' }))
+    const fetchImpl = vi.fn(async () =>
+      new Response(JSON.stringify({ choices: [{ message: { content: 'Accorcia pure' } }] }), { status: 200 }),
+    )
+    vi.stubGlobal('fetch', fetchImpl)
+    const view = renderToday()
+
+    await waitFor(() => expect(view.getByRole('heading', { name: 'Corsa' })).toBeTruthy())
+    fireEvent.click(view.getByRole('button', { name: 'AI Check-In' }))
+    fireEvent.change(view.getByPlaceholderText('Scrivi…'), { target: { value: 'gambe pesanti' } })
+    fireEvent.click(view.getByRole('button', { name: 'Invia' }))
+
+    await waitFor(() => expect(view.getByText('Accorcia pure')).toBeTruthy())
+    expect(String((fetchImpl.mock.calls[0] as unknown[])[0])).toContain('/chat/completions')
+  })
+
+  it('falls back to offline when the model is unreachable', async () => {
+    await seedPlan({ id: 'a', name: 'Corsa', plannedSessions: rule })
+    localStorage.setItem('lcc.localLlm', JSON.stringify({ enabled: true, endpoint: 'http://x/v1', model: 'm' }))
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => {
+        throw new Error('down')
+      }),
+    )
+    const view = renderToday()
+
+    await waitFor(() => expect(view.getByRole('heading', { name: 'Corsa' })).toBeTruthy())
+    fireEvent.click(view.getByRole('button', { name: 'AI Check-In' }))
+    fireEvent.change(view.getByPlaceholderText('Scrivi…'), { target: { value: 'posso correre?' } })
+    fireEvent.click(view.getByRole('button', { name: 'Invia' }))
+
+    await waitFor(() => expect(view.getByText('Nessun modello collegato')).toBeTruthy())
+    expect(view.getByText('posso correre?')).toBeTruthy()
   })
 })

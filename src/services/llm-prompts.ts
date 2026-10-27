@@ -32,3 +32,34 @@ export function composeExchange(
   const prompt = `${INSTRUCTIONS[kind]}\n\nContesto JSON:\n${json}`
   return { prompt, json }
 }
+
+// ---------------------------------------------------------------------------
+// Check-in
+// ---------------------------------------------------------------------------
+
+export function buildCheckInPrompt(label: string, message: string): string {
+  return `Check-in di oggi.\nScheda: ${label}\nMessaggio: ${message}`
+}
+
+export interface CheckInMetrics {
+  sleep?: number
+  restingHr?: number
+  steps?: number
+  tempC?: number | null
+  wind?: number | null
+}
+
+export function buildCheckInSystemPrompt(label: string, metrics: CheckInMetrics): string {
+  const parts: string[] = []
+  if (metrics.sleep !== undefined) parts.push(`sonno ${metrics.sleep}h`)
+  if (metrics.restingHr !== undefined) parts.push(`FC riposo ${metrics.restingHr}`)
+  if (metrics.steps !== undefined) parts.push(`passi ${metrics.steps}`)
+  if (metrics.tempC != null) parts.push(`temperatura ${metrics.tempC}°`)
+  if (metrics.wind != null) parts.push(`vento ${metrics.wind}`)
+  const context = parts.length > 0 ? ` Metriche di oggi: ${parts.join(', ')}.` : ''
+  return (
+    `Sei il coach di LazyCheapCoach. La sessione di oggi è: ${label}.` +
+    context +
+    ' Rispondi in italiano, breve e pratico. Una modifica proposta vale solo per oggi.'
+  )
+}
