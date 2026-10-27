@@ -94,7 +94,7 @@ export default function WorkoutPlayer() {
         <p>{session.isRunning ? 'In corso' : 'In pausa'}</p>
       </div>
 
-      <div className="glass">
+      <div className="group">
         <h2>Esercizi</h2>
 
         {session.setLogs.length > 0 ? (
@@ -140,7 +140,7 @@ export default function WorkoutPlayer() {
           aria-label="RPE"
         />
         <button
-          className="btn btn-primary"
+          className="btn btn-tint"
           type="button"
           onClick={handleAddSet}
           aria-label="Aggiungi set"
@@ -149,7 +149,7 @@ export default function WorkoutPlayer() {
         </button>
       </div>
 
-      <div className="glass">
+      <div className="group">
         <h2>Timer Recupero</h2>
         <span className="nums">{formatTime(session.remainingSec)}</span>
         <button className="btn" type="button" onClick={() => session.recoveryTimer.start()}>Avvia</button>
@@ -157,7 +157,7 @@ export default function WorkoutPlayer() {
         <button className="btn" type="button" onClick={() => session.recoveryTimer.stop()}>Stop</button>
       </div>
 
-      <div className="glass">
+      <div className="group">
         <h2>Note di sessione</h2>
         <textarea
           className="field"
@@ -165,7 +165,7 @@ export default function WorkoutPlayer() {
           value={sessionNotes}
           onChange={(e) => setSessionNotes(e.target.value)}
         />
-        <button className="btn btn-primary" type="button" onClick={handleCloseSession}>
+        <button className="btn btn-tint" type="button" onClick={handleCloseSession}>
           {isClosing ? 'Chiusura...' : 'Chiudi sessione'}
         </button>
       </div>

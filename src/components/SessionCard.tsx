@@ -11,7 +11,7 @@ export const SessionCard: FC<SessionCardProps> = ({ title, status, duration, chi
   const statusLabel = status === 'active' ? 'In corso' : 'Completata'
 
   return (
-    <div className="glass">
+    <div className="group-row">
       <p>{statusLabel}</p>
       <p>{title}</p>
       {duration ? <p>{duration}</p> : null}

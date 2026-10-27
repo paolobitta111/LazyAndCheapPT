@@ -14,7 +14,7 @@ export function ExerciseSetRow({
   isCompleted,
 }: ExerciseSetRowProps) {
   return (
-    <div className="glass">
+    <div className="group-row">
       <span>Set {index + 1}</span>
       <input
         type="number"

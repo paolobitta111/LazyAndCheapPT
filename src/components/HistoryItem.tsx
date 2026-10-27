@@ -9,7 +9,7 @@ interface HistoryItemProps {
 }
 
 export const HistoryItem: FC<HistoryItemProps> = ({ date, type, duration, planName, notes }) => (
-  <div className="glass">
+  <div className="group-row">
     <p>{type === 'workout' ? 'Workout' : 'Cardio'}</p>
     <p>{date}</p>
     {planName ? <p>{planName}</p> : null}

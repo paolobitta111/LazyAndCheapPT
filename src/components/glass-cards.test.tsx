@@ -12,14 +12,16 @@ function rootClass(ui: React.ReactElement): string {
   return container.firstElementChild?.className ?? ''
 }
 
-describe('glass cards', () => {
-  it('uses glass on each card root', () => {
-    expect(rootClass(<SessionCard title="Panca" status="active" />)).toContain('glass')
+describe('content rows and floating controls', () => {
+  it('renders list rows inside groups, not glass', () => {
+    expect(rootClass(<SessionCard title="Panca" status="active" />)).toContain('group-row')
     const history = render(<HistoryItem date="25 ott" type="workout" duration="45 min" />)
-    expect(history.container.firstElementChild?.className).toContain('glass')
+    expect(history.container.firstElementChild?.className).toContain('group-row')
     expect(history.container.innerHTML).not.toContain('is-primary')
-    expect(rootClass(<ExerciseRow name="Panca" sets={4} reps={10} weight="60 kg" />)).toContain('glass')
+    expect(rootClass(<ExerciseRow name="Panca" sets={4} reps={10} weight="60 kg" />)).toContain('group-row')
+  })
 
+  it('keeps the timer as a floating glass control', () => {
     const started = new Date('2026-10-25T08:00:00.000Z')
     const ended = new Date(started.getTime() + 60 * 60 * 1000)
     expect(rootClass(<Timer startedAt={started.toISOString()} targetEndAt={ended.toISOString()} />)).toContain('glass')
@@ -42,7 +44,7 @@ describe('glass cards', () => {
         onToggleComplete={() => Promise.resolve()}
       />,
     )
-    expect(container.firstElementChild?.className).toContain('glass')
+    expect(container.firstElementChild?.className).toContain('group-row')
     expect(container.querySelector('[aria-label="Set 1 peso"]')?.className).toContain('field')
   })
 

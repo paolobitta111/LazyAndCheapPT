@@ -77,11 +77,11 @@ export default function Cardio() {
       <label>Note</label>
       <textarea className="field" value={notes} onChange={(event) => setNotes(event.target.value)} />
 
-      <button className="btn btn-primary" type="button" onClick={saveFree}>Salva sessione libera</button>
+      <button className="btn btn-tint" type="button" onClick={saveFree}>Salva sessione libera</button>
 
       <h2>Segmenti</h2>
       {segments.map((segment, index) => (
-        <div className="glass" key={index}>
+        <div className="group" key={index}>
           <select
             className="field"
             value={segment.type}
@@ -116,7 +116,7 @@ export default function Cardio() {
       <h2>GPX</h2>
       <p>Il file resta sul dispositivo. Nessuna mappa.</p>
       <input
-        className="mb-3"
+        style={{ marginBottom: '12px' }}
         type="file"
         accept=".gpx,application/gpx+xml,text/xml"
         onChange={async (event) => {
@@ -139,8 +139,8 @@ export default function Cardio() {
         }}
       />
       {gpxSummary && <p>{gpxSummary}</p>}
-      {error && <p className="has-text-danger">{error}</p>}
-      {savedId && <p className="has-text-success">Salvato: {savedId}</p>}
+      {error && <p className="text-down">{error}</p>}
+      {savedId && <p className="text-up">Salvato: {savedId}</p>}
     </div>
   )
 }

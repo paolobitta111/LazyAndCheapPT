@@ -70,7 +70,7 @@ export default function LlmBridge() {
   return (
     <div>
       <h1>Scambio LLM</h1>
-      <p className="glass">{PRIVACY_REMINDER}</p>
+      <p className="group t-foot" style={{ color: 'var(--label-2)' }}>{PRIVACY_REMINDER}</p>
       <select className="field" value={kind} onChange={(event) => setKind(event.target.value as PromptKind)}>
         <option value="create-plan">Crea scheda</option>
         <option value="revise-plan">Modifica scheda</option>
@@ -86,8 +86,8 @@ export default function LlmBridge() {
       <h2>Risposta</h2>
       <textarea className="field" rows={8} value={responseText} onChange={(event) => setResponseText(event.target.value)} />
       <button className="btn" type="button" onClick={previewImport}>Anteprima</button>
-      <button className="btn btn-primary" type="button" disabled={!preview} onClick={confirmImport}>Conferma import</button>
-      {preview && <pre className="glass">{preview}</pre>}
+      <button className="btn btn-tint" type="button" disabled={!preview} onClick={confirmImport}>Conferma import</button>
+      {preview && <pre className="group t-cap nums" style={{ overflowX: 'auto', whiteSpace: 'pre-wrap' }}>{preview}</pre>}
       {message && <p>{message}</p>}
     </div>
   )

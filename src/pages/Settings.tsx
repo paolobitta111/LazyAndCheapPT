@@ -61,7 +61,7 @@ export default function Settings() {
         }}
       />
       {preview && (
-        <div className="glass">
+        <div className="group">
           <p>Creato: {preview.createdAt ?? 'sconosciuto'}</p>
           <p>GPX: {preview.gpxFiles}</p>
           <pre>{JSON.stringify(preview.counts, null, 2)}</pre>

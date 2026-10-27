@@ -48,16 +48,18 @@ export default function History() {
       <input className="field" value={query} placeholder="Cerca note o scheda" onChange={(event) => setQuery(event.target.value)} />
       {error && <p>{error}</p>}
       {visible.length === 0 && <p>Nessun log nel filtro.</p>}
-      {visible.map((item) => (
-        <HistoryItem
-          key={item.id}
-          date={item.date}
-          type={item.type}
-          duration={formatDuration(item.durationSec)}
-          planName={item.planVersion ? `${item.title} v${item.planVersion}` : item.title}
-          notes={item.notes}
-        />
-      ))}
+      <div className="group" style={{ padding: '0.25rem 1rem' }}>
+        {visible.map((item) => (
+          <HistoryItem
+            key={item.id}
+            date={item.date}
+            type={item.type}
+            duration={formatDuration(item.durationSec)}
+            planName={item.planVersion ? `${item.title} v${item.planVersion}` : item.title}
+            notes={item.notes}
+          />
+        ))}
+      </div>
     </div>
   )
 }

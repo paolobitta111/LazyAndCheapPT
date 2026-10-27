@@ -8,7 +8,7 @@ interface ExerciseRowProps {
 }
 
 export const ExerciseRow: FC<ExerciseRowProps> = ({ name, sets, reps, weight }) => (
-  <div className="glass">
+  <div className="group-row">
     <p>{name}</p>
     <span className="nums">{sets}×{reps}</span>
     {weight ? <span className="nums">{weight}</span> : null}

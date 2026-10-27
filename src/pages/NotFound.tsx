@@ -1,9 +1,9 @@
 export default function NotFound() {
   return (
-    <div className="glass">
+    <div className="group">
       <h1>404</h1>
       <p>Pagina non trovata</p>
-      <a className="btn btn-primary" href="#/">Torna alla Home</a>
+      <a className="btn btn-tint" href="#/">Torna alla Home</a>
     </div>
   )
 }

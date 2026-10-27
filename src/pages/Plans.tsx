@@ -30,13 +30,13 @@ export default function Plans() {
   return (
     <div>
       <h1>Schede</h1>
-      <button className="btn btn-primary" type="button" onClick={() => { setFormPlan(undefined); setFormOpen(true) }}>
+      <button className="btn btn-tint" type="button" onClick={() => { setFormPlan(undefined); setFormOpen(true) }}>
         Nuova scheda
       </button>
       {formOpen ? <PlanForm plan={formPlan} onDone={closeForm} /> : null}
       <section>
         {plans.map((plan) => (
-          <article key={plan.id} className="glass">
+          <article key={plan.id} className="group">
             <h3>{plan.name}</h3>
             <p>{plan.sport ?? 'altro'}</p>
             <p>
