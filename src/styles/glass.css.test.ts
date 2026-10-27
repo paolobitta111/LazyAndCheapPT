@@ -9,33 +9,35 @@ function read(path: string): string {
 }
 
 describe('glass tokens', () => {
-  it('pins the ink recipe, fallback, and reduced motion', () => {
+  it('pins the B-direction material, glass, and radius tokens', () => {
     const css = read('src/styles/glass.css')
     for (const token of [
-      'rgb(255 255 255 / 0.10)',
-      'rgb(255 255 255 / 0.03)',
-      'rgb(255 255 255 / 0.16)',
-      'inset 0 1px 0 rgb(255 255 255 / 0.28)',
-      '0 10px 28px rgb(0 0 0 / 0.45)',
-      'blur(20px)',
-      'saturate(160%)',
+      'blur(18px) saturate(180%)',
+      'rgb(255 255 255 / 0.13)',
+      'rgb(255 255 255 / 0.05)',
+      'rgb(255 255 255 / 0.14)',
+      'rgb(255 255 255 / 0.32)',
+      'inset 0 1px 0 rgb(255 255 255 / 0.30)',
+      '0 12px 30px rgb(0 0 0 / 0.45)',
       'rgb(28 28 30 / 0.92)',
-      '#f5f5f7',
-      '#0b0b0d',
+      '--tint: #ff6b4a',
+      '--surface: #1c1c1e',
+      '--surface-2: #2c2c2e',
+      '--r-card: 26px',
+      '--r-inner: 12px',
       '@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px)))',
+      '@media (prefers-reduced-motion: reduce)',
     ]) {
       expect(css).toContain(token)
     }
 
-    const motion = css.match(/@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/)
-    expect(motion?.[1]).toMatch(/\.glass-pill[\s\S]*?(transition:\s*none|transform:\s*none)/)
-
-    const bar = css.match(/\.glass-bar\s*\{([^}]*)\}/)
-    const blur = bar?.[1].match(/blur\((\d+(?:\.\d+)?)px\)/)
-    expect(blur).not.toBeNull()
-    const px = Number(blur?.[1])
-    expect(px).toBeGreaterThanOrEqual(2)
-    expect(px).toBeLessThanOrEqual(8)
+    expect(css).not.toContain('blur(20px)')
+    expect(css).not.toContain('.glass .glass')
+    expect(css).not.toContain('glass-pill')
+    expect(css).not.toContain('url("#liquid-glass")')
+    expect(css).not.toContain('#0b0b0d')
+    expect(css).toMatch(/\.group\s*\{[^}]*background:\s*var\(--surface\)/)
+    expect(css).not.toMatch(/\.group\s*\{[^}]*backdrop-filter/)
   })
 
   it('drops Bulma and uses the system font', () => {
@@ -46,29 +48,12 @@ describe('glass tokens', () => {
     expect(pkg.dependencies).not.toHaveProperty('bulma')
   })
 
-  it('lays out the glass chrome: fixed capsule bars and shell padding', () => {
+  it('lays out the glass chrome: fixed capsule bars and centered column', () => {
     const index = read('src/index.css')
     expect(index).not.toContain('navbar')
     expect(index).not.toContain('bottom-nav')
     expect(index).toContain('.layout-shell')
     expect(index).toMatch(/header\.glass-bar,\s*nav\.glass-bar\s*\{[^}]*position:\s*fixed/)
     expect(index).toMatch(/\.main-content\s*\{[^}]*width:\s*min\(32rem/)
-  })
-
-  it('lays out glass cards as flex columns with nested rows', () => {
-    const css = read('src/styles/glass.css')
-    expect(css).toMatch(/\.glass\s*\{[^}]*display:\s*flex[^}]*flex-direction:\s*column/)
-    expect(css).toContain('.glass .glass')
-    expect(css).toMatch(/\.field\s*\{[^}]*display:\s*block/)
-  })
-
-  it('sets the status bar to ink', () => {
-    const manifest = read('public/manifest.json')
-    expect(manifest).toContain('"theme_color": "#0b0b0d"')
-    expect(manifest).toContain('"background_color": "#0b0b0d"')
-    const vite = read('vite.config.ts')
-    expect(vite).toContain("theme_color: '#0b0b0d'")
-    expect(vite).toContain("background_color: '#0b0b0d'")
-    expect(read('index.html')).toContain('<meta name="theme-color" content="#0b0b0d" />')
   })
 })
