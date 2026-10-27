@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { SessionBox } from '../components/SessionBox'
+import { MetricCubes } from '../components/MetricCubes'
 import { formatToday, initialSchedaId, mockSchede } from './today-mock'
 
 export default function Today() {
@@ -16,6 +17,7 @@ export default function Today() {
         onSelect={setSchedaId}
         onCheckIn={() => undefined}
       />
+      <MetricCubes />
     </div>
   )
 }

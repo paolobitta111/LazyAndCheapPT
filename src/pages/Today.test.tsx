@@ -50,4 +50,19 @@ describe('Today', () => {
     expect(getByText('Previsto')).toBeTruthy()
     expect(getByRole('button', { name: 'Salta' })).toBeTruthy()
   })
+
+  it('shows weather and health cubes without labels', () => {
+    const { container, getByRole } = renderToday()
+    const text = container.textContent ?? ''
+
+    for (const value of ['14°', '8', 'Zzz', '7h 12', '52', '3.240']) {
+      expect(text).toContain(value)
+    }
+    expect(text).not.toContain('Sonno')
+    expect(text).not.toContain('Meteo')
+    expect(container.querySelectorAll('.metric-cube')).toHaveLength(2)
+
+    fireEvent.click(getByRole('button', { name: 'Salta' }))
+    expect(container.querySelectorAll('.metric-cube')).toHaveLength(2)
+  })
 })
