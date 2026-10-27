@@ -42,6 +42,7 @@ describe('content pages', () => {
     const app = readFileSync(resolve(root, 'src/App.tsx'), 'utf8')
     expect(today).not.toContain('href="#/llm"')
     expect(settings).not.toContain('href="#/llm"')
+    expect(settings).toContain("navigate('/llm')")
     expect(app).not.toContain('href="#/llm"')
   })
 })

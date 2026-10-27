@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { BackupServiceImpl } from '../data/repositories.dexie'
 import { buildBackupZip, readBackupZip, type BackupPreview } from '../services/backup-zip'
 import { loadLocalLlmConfig, saveLocalLlmConfig, testLocalLlm, type LocalLlmConfig } from '../services/local-llm'
 
 export default function Settings() {
+  const navigate = useNavigate()
   const [preview, setPreview] = useState<BackupPreview | null>(null)
   const [pending, setPending] = useState<Uint8Array | null>(null)
   const [message, setMessage] = useState<string | null>(null)
@@ -36,6 +38,12 @@ export default function Settings() {
   return (
     <div>
       <h1>Impostazioni</h1>
+      <div className="group">
+        <button className="group-row" aria-label="Scambio LLM" type="button" onClick={() => navigate('/llm')}>
+          <span className="t-body">Scambio LLM</span>
+          <span className="nums" style={{ color: 'var(--label-2)' }}>›</span>
+        </button>
+      </div>
       <div className="group">
         <p className="t-sub" style={{ color: 'var(--label-2)' }}>
           {offline ? 'Offline: i dati già salvati restano consultabili.' : 'Online. I log sono comunque salvati in locale.'}
