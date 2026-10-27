@@ -4,6 +4,8 @@ import { SessionBox, type SessionBoxPlan } from '../components/SessionBox'
 import { MetricCubes } from '../components/MetricCubes'
 import { CheckInModal } from '../components/CheckInModal'
 import { dateKey, PlanningService, type ResolvedSession } from '../services/planning.service'
+import { getWeatherNow, type WeatherNow } from '../services/weather.service'
+import { loadHealth, saveHealth, type HealthValues } from '../services/health.service'
 import { formatToday } from './today-mock'
 import { useAppData } from '../data/db'
 
@@ -30,6 +32,10 @@ export default function Today() {
 
   const [day, setDay] = useState<{ sessions: ResolvedSession[]; plans: SessionBoxPlan[] } | null>(null)
   const [checkIn, setCheckIn] = useState<CheckInTarget | null>(null)
+  const [weather, setWeather] = useState<WeatherNow>({ tempC: null, wind: null })
+  const [health, setHealth] = useState<HealthValues>(() => loadHealth())
+  const [healthOpen, setHealthOpen] = useState(false)
+  const [healthDraft, setHealthDraft] = useState<HealthValues>({})
 
   const refresh = useCallback(async () => {
     const [resolved, plans] = await Promise.all([
@@ -47,6 +53,10 @@ export default function Today() {
   useEffect(() => {
     void refresh()
   }, [refresh])
+
+  useEffect(() => {
+    void getWeatherNow().then(setWeather)
+  }, [])
 
   const resolved = day?.sessions ?? []
   const activePlans = day?.plans ?? []
@@ -94,7 +104,50 @@ export default function Today() {
         ))
       )}
 
-      <MetricCubes />
+      <MetricCubes weather={weather} health={health} onEditHealth={() => setHealthOpen(true)} />
+
+      {healthOpen ? (
+        <div className="glass" role="dialog" aria-label="Modifica salute">
+          <p className="label">Salute di oggi (a mano: Apple Salute non è accessibile da web)</p>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <input
+              className="field"
+              type="number"
+              aria-label="Sonno ore"
+              placeholder="sonno h"
+              value={healthDraft.sleep ?? ''}
+              onChange={(event) => setHealthDraft({ ...healthDraft, sleep: event.target.value === '' ? undefined : Number(event.target.value) })}
+            />
+            <input
+              className="field"
+              type="number"
+              aria-label="Battiti a riposo"
+              placeholder="FC riposo"
+              value={healthDraft.restingHr ?? ''}
+              onChange={(event) => setHealthDraft({ ...healthDraft, restingHr: event.target.value === '' ? undefined : Number(event.target.value) })}
+            />
+            <input
+              className="field"
+              type="number"
+              aria-label="Passi"
+              placeholder="passi"
+              value={healthDraft.steps ?? ''}
+              onChange={(event) => setHealthDraft({ ...healthDraft, steps: event.target.value === '' ? undefined : Number(event.target.value) })}
+            />
+          </div>
+          <button
+            className="btn btn-primary"
+            type="button"
+            onClick={() => {
+              saveHealth(healthDraft)
+              setHealth(healthDraft)
+              setHealthOpen(false)
+            }}
+          >
+            Salva salute
+          </button>
+        </div>
+      ) : null}
 
       <CheckInModal
         open={checkIn !== null}
