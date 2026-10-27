@@ -112,7 +112,14 @@ export default function Today() {
         ))
       )}
 
-      <MetricCubes weather={weather} health={health} onEditHealth={() => setHealthOpen(true)} />
+      <MetricCubes
+        weather={weather}
+        health={health}
+        onEditHealth={() => {
+          setHealthDraft(health)
+          setHealthOpen(true)
+        }}
+      />
 
       {healthOpen ? (
         <div className="glass" role="dialog" aria-label="Modifica salute">

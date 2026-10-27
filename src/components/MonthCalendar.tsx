@@ -41,7 +41,7 @@ export function buildMonthCells(year: number, monthIndex: number): Array<number 
   return cells
 }
 
-const dotStyle = (color: string, index: number) =>
+const dotStyle = (color: string, done: boolean, index: number) =>
   ({
     position: 'absolute',
     bottom: '5px',
@@ -50,6 +50,7 @@ const dotStyle = (color: string, index: number) =>
     height: '7px',
     borderRadius: '50%',
     border: `1.5px solid ${color}`,
+    background: done ? color : 'transparent',
     boxSizing: 'border-box',
   }) as const
 
@@ -117,7 +118,7 @@ export function MonthCalendar(props: {
               <span style={{ position: 'absolute', top: '6px', left: '8px' }}>{day}</span>
               {marks.map((mark, markIndex) => {
                 const color = sportDotColors[mark.sport ?? ''] ?? '#d0d0d4'
-                return <span key={markIndex} data-mark={mark.done ? 'done' : 'planned'} style={dotStyle(color, markIndex)} />
+                return <span key={markIndex} data-mark={mark.done ? 'done' : 'planned'} style={dotStyle(color, mark.done, markIndex)} />
               })}
             </button>
           )

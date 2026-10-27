@@ -73,6 +73,8 @@ describe('Calendar page', () => {
     await waitFor(() => expect(cell23.querySelectorAll('[data-mark]')).toHaveLength(2), { timeout: 3000 })
     expect(cell23.querySelector('[data-mark="done"]')).toBeTruthy()
     expect(cell23.querySelector('[data-mark="planned"]')).toBeTruthy()
+    expect((cell23.querySelector('[data-mark="done"]') as HTMLElement)?.style.background).toContain('255, 107, 74')
+    expect((cell23.querySelector('[data-mark="planned"]') as HTMLElement)?.style.background).toBe('transparent')
 
     fireEvent.click(cell23)
     await waitFor(() => expect(view.getByRole('dialog')).toBeTruthy())

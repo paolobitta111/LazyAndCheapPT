@@ -153,4 +153,25 @@ describe('Today on real data', () => {
     await waitFor(() => expect(view.getByText('Nessun modello collegato')).toBeTruthy())
     expect(view.getByText('posso correre?')).toBeTruthy()
   })
+
+  it('preserves other health values when editing one', async () => {
+    await seedPlan({ id: 'a', name: 'Corsa', plannedSessions: rule })
+    localStorage.setItem('lcc.health', JSON.stringify({ sleep: 7, restingHr: 52, steps: 3240 }))
+    const view = renderToday()
+
+    await waitFor(() => expect(view.getByRole('heading', { name: 'Corsa' })).toBeTruthy())
+    fireEvent.click(view.getByRole('button', { name: 'Modifica salute' }))
+    const hrInput = view.getByLabelText('Battiti a riposo') as HTMLInputElement
+    expect(hrInput.value).toBe('52')
+    fireEvent.change(hrInput, { target: { value: '55' } })
+    fireEvent.click(view.getByRole('button', { name: 'Salva salute' }))
+
+    await waitFor(() => {
+      expect(JSON.parse(localStorage.getItem('lcc.health') ?? '{}')).toEqual({
+        sleep: 7,
+        restingHr: 55,
+        steps: 3240,
+      })
+    })
+  })
 })

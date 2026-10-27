@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useAppData } from '../data/db'
 import { CardioLogService } from '../services/cardio-log.service'
 import { inspectGpx } from '../services/gpx'
+import { dateKey } from '../services/planning.service'
 import type { CardioSegment } from '../models/entities'
 
 type Sport = 'running' | 'cycling' | 'other'
@@ -27,7 +28,7 @@ export default function Cardio() {
   const [gpxSummary, setGpxSummary] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const date = new Date().toISOString().slice(0, 10)
+  const date = dateKey(new Date())
 
   async function saveFree() {
     setError(null)

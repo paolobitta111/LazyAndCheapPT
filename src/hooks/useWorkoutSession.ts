@@ -80,6 +80,15 @@ export function useWorkoutSession({
   }, [recoveryRunning, remainingSec])
 
   const startSession = useCallback(async () => {
+    // Re-entry must reuse the log already written for this session, not duplicate it.
+    const existing = (await workoutLogRepo.listByDate(dateKey(new Date())))
+      .find((candidate) => candidate.plannedSessionId === plannedSessionId)
+    if (existing) {
+      setWorkoutLog(existing)
+      setIsRunning(true)
+      startedAtRef.current = Date.now()
+      return
+    }
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
     const plan = planId ? await trainingPlanRepo.get(planId) : null
     // SAFETY: create() persists dates; this in-memory log is the same shape returned after insert
