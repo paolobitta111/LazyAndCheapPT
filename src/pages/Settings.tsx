@@ -36,17 +36,22 @@ export default function Settings() {
   return (
     <div>
       <h1>Impostazioni</h1>
-      <p>
-        {offline ? 'Offline: i dati già salvati restano consultabili.' : 'Online. I log sono comunque salvati in locale.'}
-      </p>
-      <button className="btn" type="button" onClick={() => setOffline(!navigator.onLine)}>Aggiorna stato rete</button>
+      <div className="group">
+        <p className="t-sub" style={{ color: 'var(--label-2)' }}>
+          {offline ? 'Offline: i dati già salvati restano consultabili.' : 'Online. I log sono comunque salvati in locale.'}
+        </p>
+        <button className="btn" type="button" onClick={() => setOffline(!navigator.onLine)}>Aggiorna stato rete</button>
+      </div>
       <h2>Backup</h2>
       <div className="group">
         <button className="btn btn-tint" type="button" onClick={exportZip}>Esporta ZIP</button>
-        <input
-          type="file"
-          accept=".zip,application/zip"
-          onChange={async (event) => {
+        <label className="btn">
+          Scegli file ZIP
+          <input
+            type="file"
+            accept=".zip,application/zip"
+            style={{ display: 'none' }}
+            onChange={async (event) => {
             const file = event.target.files?.[0]
             if (!file) return
             const bytes = new Uint8Array(await file.arrayBuffer())
@@ -60,7 +65,8 @@ export default function Settings() {
               setMessage(error instanceof Error ? error.message : 'ZIP non valido')
             }
           }}
-        />
+          />
+        </label>
         {preview && (
           <div className="group" style={{ background: 'var(--surface-2)' }}>
             <p>Creato: {preview.createdAt ?? 'sconosciuto'}</p>

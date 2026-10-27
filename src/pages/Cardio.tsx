@@ -120,11 +120,13 @@ export default function Cardio() {
       <h2>GPX</h2>
       <div className="group">
         <p className="t-sub" style={{ color: 'var(--label-2)' }}>Il file resta sul dispositivo. Nessuna mappa.</p>
-        <input
-        style={{ marginBottom: '12px' }}
-        type="file"
-        accept=".gpx,application/gpx+xml,text/xml"
-        onChange={async (event) => {
+        <label className="btn">
+          Scegli file GPX
+          <input
+          type="file"
+          accept=".gpx,application/gpx+xml,text/xml"
+          style={{ display: 'none' }}
+          onChange={async (event) => {
           const file = event.target.files?.[0]
           if (!file) return
           const xml = await file.text()
@@ -142,8 +144,9 @@ export default function Cardio() {
           setGpxSummary(`${attachment.fileName}: ${inspection.pointCount} punti, ${inspection.distanceKm.toFixed(2)} km`)
           setError(null)
         }}
-      />
-      {gpxSummary && <p>{gpxSummary}</p>}
+        />
+        </label>
+        {gpxSummary && <p>{gpxSummary}</p>}
       </div>
       {error && <p className="text-down">{error}</p>}
       {savedId && <p className="text-up">Salvato: {savedId}</p>}

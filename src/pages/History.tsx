@@ -50,6 +50,7 @@ export default function History() {
       </div>
       {error && <p>{error}</p>}
       {visible.length === 0 && <p>Nessun log nel filtro.</p>}
+      {visible.length > 0 && (
       <div className="group" style={{ padding: '0.25rem 1rem' }}>
         {visible.map((item) => (
           <HistoryItem
@@ -62,6 +63,7 @@ export default function History() {
           />
         ))}
       </div>
+      )}
     </div>
   )
 }
