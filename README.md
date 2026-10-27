@@ -18,7 +18,7 @@ Gestisci i tuoi allenamenti, monitora i progressi e pianifica le sessioni — tu
 - **React 19** + **TypeScript strict**
 - **Vite 7** (build + dev server)
 - **React Router 7** (hash routing)
-- **Bulma CSS** (UI components)
+- **Plain CSS design tokens** (glass/material system, Vite)
 - **Vite PWA** (service worker + manifest)
 - **Vitest** + **Testing Library**
 

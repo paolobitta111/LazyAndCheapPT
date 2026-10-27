@@ -57,6 +57,19 @@ describe('glass tokens', () => {
     expect(index).toMatch(/\.main-content\s*\{[^}]*width:\s*min\(32rem/)
   })
 
+  it('sets the status bar to pure black', () => {
+    const manifest = read('public/manifest.json')
+    expect(manifest).toContain('"theme_color": "#000000"')
+    expect(manifest).toContain('"background_color": "#000000"')
+    const vite = read('vite.config.ts')
+    expect(vite).toContain("theme_color: '#000000'")
+    expect(vite).toContain("background_color: '#000000'")
+    expect(read('index.html')).toContain('<meta name="theme-color" content="#000000" />')
+    const css = read('src/styles/glass.css')
+    expect(css).not.toContain('--ink')
+    expect(css).not.toContain('ink-fallback')
+  })
+
   it('runs content edge-to-edge under the bars with a scroll-aware bar title', () => {
     const index = read('src/index.css')
     expect(index).not.toMatch(/\.layout-shell\s*\{[^}]*padding:\s*5\.25rem/)

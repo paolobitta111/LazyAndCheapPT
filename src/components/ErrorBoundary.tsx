@@ -14,7 +14,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
   render() {
     if (this.state.message) {
       return (
-        <div className="ink-fallback">
+        <div className="fallback">
           <h1>Qualcosa è andato storto</h1>
           <p>{this.state.message}</p>
           <button className="btn" type="button" onClick={() => window.location.reload()}>Ricarica</button>

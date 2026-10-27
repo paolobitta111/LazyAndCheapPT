@@ -57,6 +57,6 @@ describe('content rows and floating controls', () => {
         <Boom />
       </ErrorBoundary>,
     )
-    expect(container.firstElementChild?.className).toContain('ink-fallback')
+    expect(container.firstElementChild?.className).toContain('fallback')
   })
 })
