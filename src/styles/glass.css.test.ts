@@ -40,6 +40,26 @@ describe('glass tokens', () => {
     expect(css).not.toMatch(/\.group\s*\{[^}]*backdrop-filter/)
   })
 
+  it('adds the sheet and iOS control classes', () => {
+    const css = read('src/styles/glass.css')
+    for (const token of [
+      '--fill: rgba(118, 118, 128, 0.24)',
+      '.sheet .group {',
+      '.group .group {',
+      'border-radius: var(--r-card) var(--r-card) 0 0',
+      'max(1rem, env(safe-area-inset-bottom))',
+      '@media (min-width: 48rem)',
+    ]) {
+      expect(css).toContain(token)
+    }
+
+    for (const name of ['seg-item', 'pill', 'grabber']) {
+      const block = css.match(new RegExp(`\\.${name}\\s*\\{[^}]*\\}`))
+      expect(block).not.toBeNull()
+      expect(block?.[0]).not.toContain('transition')
+    }
+  })
+
   it('drops Bulma and uses the system font', () => {
     const css = read('src/styles/glass.css')
     expect(css).toContain('-apple-system, BlinkMacSystemFont, system-ui, sans-serif')
