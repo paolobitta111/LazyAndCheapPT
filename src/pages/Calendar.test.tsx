@@ -72,10 +72,7 @@ describe('useCalendarWeek', () => {
 
     const repo = makeRepo({
       listByDate: vi.fn<(date: string) => Promise<PlannedSession[]>>().mockImplementation(
-        async (date) => {
-          if (date.includes('-10-21')) return [{ id: 's1', planId: 'plan-1', date, status: 'planned' as const, createdAt: new Date(), updatedAt: new Date() }]
-          return []
-        },
+        async (date) => [{ id: 's1', planId: 'plan-1', date, status: 'planned' as const, createdAt: new Date(), updatedAt: new Date() }],
       ),
     })
 

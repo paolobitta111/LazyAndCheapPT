@@ -1,6 +1,8 @@
-import { CalendarSlot } from '../components/CalendarSlot'
 import { useEffect, useState } from 'react'
-import { useAppData } from '../data/db'
+import { DaySummaryModal } from '../components/DaySummaryModal'
+import { MonthCalendar, monthNames } from '../components/MonthCalendar'
+import { mockSchede, octoberMonthIndex, octoberSessions, octoberYear } from './today-mock'
+import type { MockDaySession } from './today-mock'
 import type { PlannedSession, TrainingPlan } from '../models/entities'
 import type { PlannedSessionRepo, TrainingPlanRepo } from '../data/repositories'
 
@@ -85,28 +87,68 @@ export function useCalendarWeek(
   return slots
 }
 
+function formatDayLabel(year: number, monthIndex: number, day: number): string {
+  const date = new Date(year, monthIndex, day)
+  const weekday = date.toLocaleDateString('it-IT', { weekday: 'long' })
+  const month = monthNames[monthIndex]
+  const label = `${weekday} ${day} ${month}`
+  return label.charAt(0).toUpperCase() + label.slice(1)
+}
+
 export default function Calendar() {
-  const { plannedSessionRepo, trainingPlanRepo } = useAppData()
-  const slots = useCalendarWeek(plannedSessionRepo, trainingPlanRepo)
+  const [year, setYear] = useState(octoberYear)
+  const [monthIndex, setMonthIndex] = useState(octoberMonthIndex)
+  const [selectedDay, setSelectedDay] = useState<number | null>(null)
+
+  const isOctober = year === octoberYear && monthIndex === octoberMonthIndex
+  const sessions: MockDaySession[] = isOctober ? octoberSessions : []
+  const today = isOctober ? { year: octoberYear, monthIndex: octoberMonthIndex, day: 25 } : null
+
+  const selected = selectedDay === null ? null : sessions.find((session) => session.day === selectedDay) ?? null
+  const selectedScheda = selected ? mockSchede.find((scheda) => scheda.id === selected.schedaId) : undefined
+
+  function prevMonth() {
+    if (monthIndex === 0) {
+      setMonthIndex(11)
+      setYear((value) => value - 1)
+    } else {
+      setMonthIndex((value) => value - 1)
+    }
+    setSelectedDay(null)
+  }
+
+  function nextMonth() {
+    if (monthIndex === 11) {
+      setMonthIndex(0)
+      setYear((value) => value + 1)
+    } else {
+      setMonthIndex((value) => value + 1)
+    }
+    setSelectedDay(null)
+  }
 
   return (
-    <div>
-      <h1>Calendario</h1>
-      <div className="glass">
-        <span>Settimana</span>
-        <span>Mese</span>
-      </div>
-      <section>
-        {slots.map((slot, idx) => (
-          <CalendarSlot
-            key={idx}
-            day={slot.day}
-            time={slot.time}
-            planName={slot.planName}
-            hasPlan={slot.hasPlan}
-          />
-        ))}
-      </section>
+    <div style={{ height: '100%' }}>
+      <MonthCalendar
+        year={year}
+        monthIndex={monthIndex}
+        sessions={sessions}
+        today={today}
+        onSelectDay={(day) => {
+          if (sessions.some((session) => session.day === day)) setSelectedDay(day)
+        }}
+        onPrev={prevMonth}
+        onNext={nextMonth}
+      />
+      {selected ? (
+        <DaySummaryModal
+          dateLabel={formatDayLabel(year, monthIndex, selected.day)}
+          title={selectedScheda?.name ?? 'Sessione'}
+          summary={selected.summary}
+          notes={selected.notes}
+          onClose={() => setSelectedDay(null)}
+        />
+      ) : null}
     </div>
   )
 }
