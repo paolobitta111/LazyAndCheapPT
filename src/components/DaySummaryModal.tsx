@@ -15,15 +15,15 @@ export function DaySummaryModal(props: {
       <div
         role="dialog"
         aria-label={props.dateLabel}
-        className="glass day-modal"
+        className="sheet day-modal"
         style={{ width: 'min(92vw, 380px)', padding: '16px', margin: '16px' }}
         onClick={(event) => event.stopPropagation()}
       >
-        <p style={{ margin: 0, color: 'rgba(245,245,247,.55)', fontSize: '13px' }}>{props.dateLabel}</p>
-        <h3 style={{ margin: '6px 0 4px', fontSize: '20px', fontWeight: 500 }}>{props.title}</h3>
+        <p className="t-foot" style={{ margin: 0, color: 'var(--label-2)' }}>{props.dateLabel}</p>
+        <h3 className="t-title" style={{ margin: '6px 0 4px' }}>{props.title}</h3>
         <p style={{ margin: 0 }}>{props.summary}</p>
         {props.notes ? (
-          <p style={{ margin: '8px 0 0', color: 'rgba(245,245,247,.7)', fontSize: '14px' }}>{props.notes}</p>
+          <p className="t-sub" style={{ margin: '8px 0 0', color: 'var(--label-2)' }}>{props.notes}</p>
         ) : null}
         {props.onAdd ? (
           <button className="btn" type="button" style={{ marginTop: '14px' }} onClick={props.onAdd}>
@@ -31,7 +31,7 @@ export function DaySummaryModal(props: {
           </button>
         ) : null}
         <button
-          className={props.onAdd ? 'btn btn-primary' : 'btn'}
+          className={props.onAdd ? 'btn btn-tint' : 'btn'}
           type="button"
           style={{ marginTop: '14px', marginLeft: props.onAdd ? '6px' : 0 }}
           onClick={props.onClose}

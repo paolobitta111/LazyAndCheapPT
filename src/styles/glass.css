@@ -211,6 +211,58 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
+/* ---- check-in (sheet di chat) ---- */
+
+.checkin-bubble-user,
+.checkin-bubble-assistant {
+  max-width: 86%;
+  padding: 10px 12px;
+  border-radius: 16px;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.checkin-bubble-user {
+  margin-left: auto;
+  background: var(--tint);
+  color: #160b07;
+  border-bottom-right-radius: 6px;
+}
+
+.checkin-bubble-assistant {
+  margin-right: auto;
+  background: var(--surface-2);
+  color: var(--label);
+  border-bottom-left-radius: 6px;
+}
+
+.checkin-panel {
+  background: var(--surface-2);
+  border-radius: var(--r-inner);
+  padding: 12px;
+}
+
+.checkin-send {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkin-send svg {
+  width: 18px;
+  height: 18px;
+  stroke: #160b07;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* ---- fallback e accessibilità ---- */
 
 .fallback {

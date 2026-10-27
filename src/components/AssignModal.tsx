@@ -8,11 +8,11 @@ export function AssignModal(props: {
       <div
         role="dialog"
         aria-label="Assegna scheda"
-        className="glass day-modal"
+        className="sheet day-modal"
         style={{ width: 'min(92vw, 380px)', padding: '16px', margin: '16px' }}
         onClick={(event) => event.stopPropagation()}
       >
-        <p style={{ margin: '0 0 10px', color: 'rgba(245,245,247,.55)', fontSize: '13px' }}>
+        <p className="t-foot" style={{ margin: '0 0 10px', color: 'var(--label-2)' }}>
           Assegna una scheda a questo giorno
         </p>
         {props.schede.map((scheda) => (

@@ -2,30 +2,13 @@ import type { HealthValues } from '../services/health.service'
 import type { WeatherNow } from '../services/weather.service'
 
 const iconStyle = {
-  width: '22px',
-  height: '22px',
-  stroke: '#f5f5f7',
+  width: '17px',
+  height: '17px',
+  stroke: 'var(--label)',
   fill: 'none',
   strokeWidth: 1.7,
   strokeLinecap: 'round',
   strokeLinejoin: 'round',
-} as const
-
-const cubeStyle = {
-  flex: 1,
-  minHeight: '96px',
-  borderRadius: '16px',
-  background: 'linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.03))',
-  border: '1px solid rgba(255,255,255,.16)',
-  boxShadow: 'inset 0 1px 0 rgba(255,255,255,.22)',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  gap: '8px',
-  padding: '12px',
-  font: 'inherit',
-  color: '#f5f5f7',
-  textAlign: 'left',
 } as const
 
 const itemStyle = { display: 'flex', alignItems: 'center', gap: '8px', fontVariantNumeric: 'tabular-nums', fontSize: '15px' } as const
@@ -44,8 +27,8 @@ export function MetricCubes(props: {
   const steps = props.health.steps === undefined ? dash : String(props.health.steps).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 
   return (
-    <div style={{ display: 'flex', gap: '10px', marginTop: '12px' }}>
-      <div className="glass metric-cube" style={cubeStyle}>
+    <div className="metrics-row" style={{ display: 'flex', marginTop: '4px' }}>
+      <div className="group group-half" style={{ flex: 1, justifyContent: 'center', gap: '8px' }}>
         <div style={itemStyle}>
           <svg viewBox="0 0 24 24" aria-hidden="true" {...iconStyle}>
             <path d="M7 17h10a4 4 0 0 0 .4-8 6 6 0 0 0-11.5 1.6A3.5 3.5 0 0 0 7 17z" />
@@ -62,12 +45,12 @@ export function MetricCubes(props: {
       <button
         type="button"
         aria-label="Modifica salute"
-        className="glass metric-cube"
-        style={{ ...cubeStyle, cursor: 'pointer' }}
+        className="group group-half"
+        style={{ flex: 1, justifyContent: 'center', gap: '8px', borderLeft: '1px solid var(--sep)', borderRadius: '0 var(--r-card) var(--r-card) 0', cursor: 'pointer', font: 'inherit', color: 'inherit', textAlign: 'left' }}
         onClick={props.onEditHealth}
       >
         <div style={itemStyle}>
-          <span style={{ fontWeight: 700, letterSpacing: '-.04em', fontSize: '16px', width: '22px', textAlign: 'center' }}>Zzz</span>
+          <span style={{ fontWeight: 700, letterSpacing: '-.04em', fontSize: '16px', width: '17px', textAlign: 'center' }}>Z</span>
           <span>{sleep}</span>
         </div>
         <div style={itemStyle}>

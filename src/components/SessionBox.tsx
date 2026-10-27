@@ -23,24 +23,17 @@ export function SessionBox(props: {
   }
 
   return (
-    <section className="glass" aria-label={props.plan ? props.plan.name : 'Riposo'}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-        <h3
-          style={{ margin: 0, fontSize: '22px', fontWeight: 400, color: '#f5f5f7', cursor: props.plan ? 'pointer' : 'default' }}
-          onClick={props.plan ? props.onOpen : undefined}
-        >
+    <section className="group" aria-label={props.plan ? props.plan.name : 'Riposo'}>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '8px' }}>
+        <h3 className="t-title" style={{ margin: 0, cursor: props.plan ? 'pointer' : 'default' }} onClick={props.plan ? props.onOpen : undefined}>
           {props.plan ? props.plan.name : 'Riposo'}
         </h3>
-        {props.plan ? (
-          <span style={{ fontSize: '11px', letterSpacing: '0.06em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: '999px', background: 'rgba(255,107,74,.18)', color: '#ffb4a2' }}>
-            Previsto
-          </span>
-        ) : null}
+        {props.plan ? <span className="badge">Previsto</span> : null}
       </div>
-      <p style={{ margin: '8px 0 0', color: 'rgba(245,245,247,.55)', fontSize: '15px' }}>
+      <p className="t-sub" style={{ margin: 0, color: 'var(--label-2)' }}>
         {props.plan ? props.plan.description || props.plan.name : 'Nessuna sessione'}
       </p>
-      <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-end', marginTop: '22px', position: 'relative', zIndex: 2 }}>
+      <div className="session-actions" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', alignItems: 'center', marginTop: '8px', position: 'relative', zIndex: 2 }}>
         {props.plan ? (
           <button className="btn" type="button" onClick={props.onSkip}>Salta</button>
         ) : null}
@@ -51,7 +44,7 @@ export function SessionBox(props: {
           onToggle={() => setOpen((value) => !value)}
           onSelect={select}
         />
-        <button className="btn btn-primary" type="button" onClick={props.onCheckIn}>AI Check-In</button>
+        <button className="btn-tint" type="button" onClick={props.onCheckIn}>AI Check-In</button>
       </div>
     </section>
   )

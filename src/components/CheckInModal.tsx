@@ -117,42 +117,29 @@ export function CheckInModal(props: {
       <div
         role="dialog"
         aria-label={`Check-in · ${props.label}`}
-        className="glass checkin-dialog"
+        className="sheet checkin-dialog"
         style={{ width: 'min(92vw, 420px)', maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}
         onClick={(event) => event.stopPropagation()}
       >
-        <p className="checkin-eyebrow" style={{ margin: 0, color: 'rgba(245,245,247,.55)', fontSize: '13px' }}>
+        <p className="checkin-eyebrow t-foot" style={{ margin: 0, color: 'var(--label-2)' }}>
           Check-in · {props.label}
         </p>
-        <h3 style={{ margin: '6px 0 12px', fontSize: '18px', fontWeight: 500 }}>Chat</h3>
+        <h3 className="t-title" style={{ margin: '6px 0 12px' }}>Chat</h3>
 
         {messages.map((message, index) => (
           <p
             key={index}
             data-role={message.role}
             className={message.role === 'user' ? 'checkin-bubble-user' : 'checkin-bubble-assistant'}
-            style={{
-              maxWidth: '86%',
-              marginLeft: message.role === 'user' ? 'auto' : undefined,
-              marginRight: message.role === 'user' ? 0 : 'auto',
-              padding: '10px 12px',
-              borderRadius: '16px',
-              fontSize: '14px',
-              lineHeight: 1.35,
-              background: message.role === 'user' ? '#f5f5f7' : 'rgba(255,255,255,.08)',
-              color: message.role === 'user' ? '#0b0b0d' : '#f5f5f7',
-              borderBottomRightRadius: message.role === 'user' ? '6px' : undefined,
-              borderBottomLeftRadius: message.role === 'assistant' ? '6px' : undefined,
-            }}
           >
             {message.text}
           </p>
         ))}
 
         {offline ? (
-          <div style={{ marginTop: '12px', padding: '12px', borderRadius: '16px', background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.12)' }}>
-            <strong style={{ fontSize: '14px' }}>Nessun modello collegato</strong>
-            <p style={{ margin: '4px 0 10px', fontSize: '14px', color: 'rgba(245,245,247,.8)' }}>
+          <div className="checkin-panel" style={{ marginTop: '12px' }}>
+            <strong className="t-sub">Nessun modello collegato</strong>
+            <p className="t-sub" style={{ margin: '4px 0 10px', color: 'var(--label-2)' }}>
               Il prompt è pronto. Passalo a un'altra AI, poi riporta qui la risposta.
             </p>
             <div style={{ display: 'flex', gap: '6px' }}>
@@ -165,8 +152,8 @@ export function CheckInModal(props: {
           </div>
         ) : null}
 
-        {promptShown ? <pre className="checkin-prompt" style={{ marginTop: '10px', whiteSpace: 'pre-wrap', fontSize: '12px' }}>{promptShown}</pre> : null}
-        {status ? <p className="checkin-status" style={{ margin: '10px 0 0', fontSize: '14px' }}>{status}</p> : null}
+        {promptShown ? <pre className="checkin-prompt t-cap nums" style={{ marginTop: '10px', whiteSpace: 'pre-wrap', overflowX: 'auto' }}>{promptShown}</pre> : null}
+        {status ? <p className="checkin-status t-sub" style={{ margin: '10px 0 0' }}>{status}</p> : null}
 
         {importOpen ? (
           <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -192,27 +179,10 @@ export function CheckInModal(props: {
           <button
             type="button"
             aria-label="Invia"
-            className="checkin-send"
-            style={{
-              width: '40px',
-              height: '40px',
-              flex: 'none',
-              borderRadius: '50%',
-              border: '1px solid rgba(255,255,255,.22)',
-              background: 'linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.05))',
-              color: '#f5f5f7',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: 0,
-            }}
+            className="btn-tint checkin-send"
             onClick={send}
           >
-            <svg
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-              style={{ width: '18px', height: '18px', stroke: '#f5f5f7', fill: 'none', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }}
-            >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 19V6M6.5 11.5 12 6l5.5 5.5" />
             </svg>
           </button>

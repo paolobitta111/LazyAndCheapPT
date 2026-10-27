@@ -76,7 +76,7 @@ export function MonthCalendar(props: {
         <button className="btn" type="button" aria-label="Mese successivo" onClick={props.onNext}>›</button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', fontSize: '11px', color: 'rgba(255,255,255,.45)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '4px', textAlign: 'center', fontSize: '12px', color: 'var(--label-2)' }}>
         {weekdayLetters.map((letter, index) => (
           <span key={index}>{letter}</span>
         ))}
@@ -107,12 +107,12 @@ export function MonthCalendar(props: {
                 aspectRatio: '1',
                 borderRadius: '12px',
                 border: 0,
-                background: isSelected ? 'rgba(255,255,255,.12)' : 'transparent',
-                color: '#f5f5f7',
+                background: isSelected ? 'rgba(255,107,74,.14)' : 'transparent',
+                color: 'var(--label)',
                 font: 'inherit',
                 fontSize: '13px',
                 fontVariantNumeric: 'tabular-nums',
-                boxShadow: isToday ? 'inset 0 0 0 1.5px rgba(255,255,255,.7)' : undefined,
+                boxShadow: isToday ? 'inset 0 0 0 1.5px var(--tint)' : undefined,
               }}
             >
               <span style={{ position: 'absolute', top: '6px', left: '8px' }}>{day}</span>
@@ -125,7 +125,7 @@ export function MonthCalendar(props: {
         })}
       </div>
 
-      <div style={{ display: 'flex', gap: '12px', fontSize: '11px', color: 'rgba(255,255,255,.62)' }}>
+      <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: 'var(--label-2)' }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
           <i style={{ width: '7px', height: '7px', borderRadius: '50%', background: sportDotColors.strength }} />
           Palestra

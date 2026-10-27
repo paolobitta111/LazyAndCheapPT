@@ -123,7 +123,7 @@ export default function Today() {
       />
 
       {healthOpen ? (
-        <div className="glass" role="dialog" aria-label="Modifica salute">
+        <div className="group" role="dialog" aria-label="Modifica salute">
           <p className="label">Salute di oggi (a mano: Apple Salute non è accessibile da web)</p>
           <div style={{ display: 'flex', gap: '6px' }}>
             <input
