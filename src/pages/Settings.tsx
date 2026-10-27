@@ -36,7 +36,6 @@ export default function Settings() {
   return (
     <div>
       <h1>Impostazioni</h1>
-      <p><a href="#/llm">Apri il ponte LLM</a></p>
       <p>
         {offline ? 'Offline: i dati già salvati restano consultabili.' : 'Online. I log sono comunque salvati in locale.'}
       </p>

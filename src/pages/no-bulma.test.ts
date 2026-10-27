@@ -38,10 +38,12 @@ describe('content pages', () => {
     }
   })
 
-  it('links Oggi and Impostazioni to the LLM bridge', () => {
+  it('does not leave a loose LLM link in the page body', () => {
     const today = readFileSync(resolve(root, 'src/pages/Today.tsx'), 'utf8')
     const settings = readFileSync(resolve(root, 'src/pages/Settings.tsx'), 'utf8')
-    expect(today).toContain('href="#/llm"')
-    expect(settings).toContain('href="#/llm"')
+    const app = readFileSync(resolve(root, 'src/App.tsx'), 'utf8')
+    expect(today).not.toContain('href="#/llm"')
+    expect(settings).not.toContain('href="#/llm"')
+    expect(app).toContain("navigate('/llm')")
   })
 })
