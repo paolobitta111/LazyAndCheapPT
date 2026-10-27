@@ -33,3 +33,29 @@ test('screenshot oggi at rest (viewport only)', async ({ page }) => {
   await page.waitForTimeout(600)
   await page.screenshot({ path: resolve(OUT, 'oggi-at-rest.png') })
 })
+
+const monthNamesIt = [
+  'gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
+  'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre',
+]
+
+test('screenshot scheda form sheet (viewport only)', async ({ page }) => {
+  await page.goto('http://localhost:5173/#/schede')
+  await page.waitForTimeout(600)
+  await page.getByRole('button', { name: 'Nuova scheda' }).click()
+  await page.waitForTimeout(400)
+  await page.screenshot({ path: resolve(OUT, 'scheda-form.png') })
+
+  await page.getByRole('button', { name: 'Esercizio 1' }).click()
+  await page.waitForTimeout(400)
+  await page.screenshot({ path: resolve(OUT, 'scheda-form-dettaglio.png') })
+})
+
+test('screenshot calendario bottom sheet assegna (viewport only)', async ({ page }) => {
+  await page.goto('http://localhost:5173/#/calendario')
+  await page.waitForTimeout(600)
+  const monthName = monthNamesIt[new Date().getMonth()]
+  await page.getByRole('button', { name: `5 ${monthName}`, exact: true }).click()
+  await page.waitForTimeout(400)
+  await page.screenshot({ path: resolve(OUT, 'calendario-assegna.png') })
+})

@@ -17,9 +17,9 @@ function renderPlans() {
 async function createCorsa(view: ReturnType<typeof renderPlans>) {
   fireEvent.click(view.getByRole('button', { name: 'Nuova scheda' }))
   const dialog = view.getByRole('dialog', { name: 'Nuova scheda' })
-  expect(within(dialog).getByRole('button', { name: 'Salva' }).disabled).toBe(true)
+  expect((within(dialog).getByRole('button', { name: 'Salva' }) as HTMLButtonElement).disabled).toBe(true)
   fireEvent.change(within(dialog).getByLabelText('Nome'), { target: { value: 'Corsa' } })
-  expect(within(dialog).getByRole('button', { name: 'Salva' }).disabled).toBe(false)
+  expect((within(dialog).getByRole('button', { name: 'Salva' }) as HTMLButtonElement).disabled).toBe(false)
   fireEvent.click(within(dialog).getByRole('button', { name: 'Martedì' }))
   fireEvent.click(within(dialog).getByRole('button', { name: '+ Aggiungi data' }))
   fireEvent.change(within(dialog).getByLabelText('Nuova data') as HTMLInputElement, { target: { value: '2026-11-03' } })
