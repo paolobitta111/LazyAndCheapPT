@@ -16,7 +16,7 @@ html, body, #root {
 .main-content {
   width: min(32rem, 100%);
   margin-inline: auto;
-  padding: calc(env(safe-area-inset-top) + 4.5rem) 1rem calc(env(safe-area-inset-bottom) + 6.5rem);
+  padding: calc(env(safe-area-inset-top) + 1.1rem) 1rem calc(env(safe-area-inset-bottom) + 6.5rem);
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -99,6 +99,15 @@ header.glass-bar {
 
 .layout-shell[data-scrolled="true"] .bar-title {
   opacity: 1;
+}
+
+/* a riposo l'header è trasparente: solo large title + glifo (pattern iOS) */
+.layout-shell[data-scrolled="false"] header.glass-bar {
+  background-image: none;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 
 header.glass-bar .btn {
