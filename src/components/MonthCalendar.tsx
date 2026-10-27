@@ -99,7 +99,7 @@ export function MonthCalendar(props: {
               <button
                 key={day}
                 type="button"
-                className="month-cell"
+                className="month-cell t-foot"
                 aria-label={`${day} ${monthName}`}
                 data-today={isToday ? 'true' : undefined}
                 onClick={() => props.onSelectDay(day)}
@@ -111,7 +111,6 @@ export function MonthCalendar(props: {
                   background: isSelected ? 'rgba(255,107,74,.14)' : 'transparent',
                   color: 'var(--label)',
                   font: 'inherit',
-                  fontSize: '13px',
                   fontVariantNumeric: 'tabular-nums',
                   boxShadow: isToday ? 'inset 0 0 0 1.5px var(--tint)' : undefined,
                 }}

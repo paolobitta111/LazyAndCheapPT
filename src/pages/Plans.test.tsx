@@ -17,6 +17,8 @@ function renderPlans() {
 async function createCorsa(view: ReturnType<typeof renderPlans>) {
   fireEvent.click(view.getByRole('button', { name: 'Nuova scheda' }))
   const dialog = view.getByRole('dialog', { name: 'Nuova scheda' })
+  expect(dialog).toHaveClass('sheet-bottom')
+  expect(dialog.querySelector('.grabber')).toBeTruthy()
   expect((within(dialog).getByRole('button', { name: 'Salva' }) as HTMLButtonElement).disabled).toBe(true)
   fireEvent.change(within(dialog).getByLabelText('Nome'), { target: { value: 'Corsa' } })
   expect((within(dialog).getByRole('button', { name: 'Salva' }) as HTMLButtonElement).disabled).toBe(false)
@@ -65,5 +67,38 @@ describe('Plans', () => {
     expect(view.queryByText(/^Corsa$/)).toBeNull()
     expect(view.getAllByText('M')).toHaveLength(1)
     expect(view.getByText('2026-11-03')).toBeTruthy()
+  })
+
+  it('removes an exercise from the sub-view', async () => {
+    const view = renderPlans()
+    await waitFor(() => expect(view.getByRole('button', { name: 'Nuova scheda' })).toBeTruthy())
+
+    await createCorsa(view)
+    await waitFor(() => expect(view.getByText('Corsa')).toBeTruthy())
+
+    fireEvent.click(view.getByRole('button', { name: 'Modifica' }))
+    const dialog = view.getByRole('dialog', { name: 'Modifica scheda' })
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Esercizio 1' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Rimuovi esercizio 1' }))
+
+    expect(within(dialog).queryByRole('button', { name: 'Esercizio 1' })).toBeNull()
+    expect(within(dialog).getByRole('button', { name: '+ Aggiungi esercizio' })).toBeTruthy()
+  })
+
+  it('opens a fresh sub-view for each added exercise', async () => {
+    const view = renderPlans()
+    await waitFor(() => expect(view.getByRole('button', { name: 'Nuova scheda' })).toBeTruthy())
+
+    fireEvent.click(view.getByRole('button', { name: 'Nuova scheda' }))
+    let dialog = view.getByRole('dialog', { name: 'Nuova scheda' })
+    fireEvent.click(within(dialog).getByRole('button', { name: '+ Aggiungi esercizio' }))
+    expect(view.getByRole('heading', { name: 'Esercizio 2' })).toBeTruthy()
+    fireEvent.click(view.getByRole('button', { name: '‹ Esercizi' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: '+ Aggiungi esercizio' }))
+    expect(view.getByRole('heading', { name: 'Esercizio 3' })).toBeTruthy()
+    dialog = view.getByRole('dialog', { name: 'Nuova scheda' })
+    fireEvent.click(within(dialog).getByRole('button', { name: '‹ Esercizi' }))
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Annulla' }))
+    expect(view.queryByRole('dialog')).toBeNull()
   })
 })

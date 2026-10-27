@@ -64,11 +64,8 @@ export function PlanForm(props: { plan?: TrainingPlan; onDone: () => void }) {
   }
 
   function addExercise() {
-    let index = 0
-    setExercises((current) => {
-      index = current.length
-      return [...current, emptyExercise(current.length)]
-    })
+    const index = exercises.length
+    setExercises((current) => [...current, emptyExercise(current.length)])
     setEditing(index)
   }
 
@@ -119,10 +116,11 @@ export function PlanForm(props: { plan?: TrainingPlan; onDone: () => void }) {
       <div
         role="dialog"
         aria-label={title}
-        className="sheet"
-        style={{ width: 'min(92vw, 420px)', maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}
+        className="sheet sheet-bottom"
+        style={{ width: 'min(92vw, 420px)', maxHeight: '80vh', overflowY: 'auto' }}
         onClick={(event) => event.stopPropagation()}
       >
+        <div className="grabber" aria-hidden="true" />
         <div className="sheet-nav" style={{ marginBottom: '0.75rem' }}>
           {editing === null ? (
             <button className="btn-quiet" type="button" onClick={props.onDone}>Annulla</button>
@@ -280,7 +278,7 @@ export function PlanForm(props: { plan?: TrainingPlan; onDone: () => void }) {
                 onChange={(event) => updateExercise(editing, { defaultKg: Number(event.target.value) })}
               />
             </div>
-            <button className="group-row" type="button" style={{ color: 'var(--red)' }} onClick={() => removeExercise(editing)}>
+            <button className="group-row" type="button" aria-label={`Rimuovi esercizio ${exerciseIndex}`} style={{ color: 'var(--red)' }} onClick={() => removeExercise(editing)}>
               Rimuovi
             </button>
           </div>

@@ -9,7 +9,7 @@ export function AssignModal(props: {
         role="dialog"
         aria-label="Assegna scheda"
         className="sheet sheet-bottom"
-        style={{ width: 'min(92vw, 380px)', padding: '16px', overflowY: 'auto' }}
+        style={{ width: 'min(92vw, 380px)', overflowY: 'auto' }}
         onClick={(event) => event.stopPropagation()}
       >
         <div className="grabber" aria-hidden="true" />

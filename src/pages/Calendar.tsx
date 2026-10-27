@@ -138,6 +138,17 @@ export default function Calendar() {
         onNext={nextMonth}
       />
 
+      {selectedDay !== null && first ? (
+        <DaySummaryModal
+          dateLabel={formatDayLabel(year, monthIndex, selectedDay)}
+          title={first.name}
+          summary={summaryFor(first).summary}
+          notes={summaryFor(first).notes}
+          onAdd={() => setAssignDay(selectedDay)}
+          onClose={() => setSelectedDay(null)}
+        />
+      ) : null}
+
       {assignDay !== null ? (
         <AssignModal
           schede={schede}
@@ -151,17 +162,6 @@ export default function Calendar() {
               })
           }}
           onClose={() => setAssignDay(null)}
-        />
-      ) : null}
-
-      {selectedDay !== null && first ? (
-        <DaySummaryModal
-          dateLabel={formatDayLabel(year, monthIndex, selectedDay)}
-          title={first.name}
-          summary={summaryFor(first).summary}
-          notes={summaryFor(first).notes}
-          onAdd={() => setAssignDay(selectedDay)}
-          onClose={() => setSelectedDay(null)}
         />
       ) : null}
     </div>

@@ -257,6 +257,7 @@ body {
 
 .sheet-bottom {
   border-radius: var(--r-card) var(--r-card) 0 0;
+  padding: 16px;
   padding-bottom: max(1rem, env(safe-area-inset-bottom));
 }
 
@@ -308,7 +309,7 @@ body {
 
   .sheet-bottom {
     border-radius: var(--r-card);
-    padding-bottom: 1rem;
+    padding-bottom: 16px;
   }
 
   .sheet-bottom .grabber {

@@ -69,6 +69,7 @@ describe('Calendar page', () => {
     expect(grp).not.toBeNull()
     expect(grp).toHaveClass('group')
     expect(grp?.querySelector('button[aria-label^="1 "]')).toBeTruthy()
+    expect(grp?.querySelector('button.month-cell')).toHaveClass('t-foot')
     const head = view.getByText('Ottobre 2026')
     expect(grp?.contains(head)).toBe(false)
   })
@@ -139,8 +140,13 @@ describe('Calendar page', () => {
     await waitFor(() => expect(view.getByRole('dialog')).toBeTruthy())
     const summary = within(view.getByRole('dialog'))
     await waitFor(() => expect(summary.getByRole('button', { name: 'Aggiungi allenamento' })).toBeTruthy(), { timeout: 3000 })
+    const summaryBackdrop = view.getByRole('dialog').parentElement
     fireEvent.click(summary.getByRole('button', { name: 'Aggiungi allenamento' }))
     await waitFor(() => expect(view.getByRole('dialog', { name: 'Assegna scheda' })).toBeTruthy())
+    const assignBackdrop = view.getByRole('dialog', { name: 'Assegna scheda' }).parentElement
+    // both sheets stay mounted; the assign sheet must paint above the summary
+    // (equal z-index → DOM order decides): assign must come after summary
+    expect(assignBackdrop?.compareDocumentPosition(summaryBackdrop!)! & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy()
     await waitFor(() => expect(view.getByRole('button', { name: 'Bici' })).toBeTruthy(), { timeout: 3000 })
     fireEvent.click(view.getByRole('button', { name: 'Bici' }))
 
