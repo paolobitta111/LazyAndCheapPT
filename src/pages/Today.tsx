@@ -6,12 +6,20 @@ import { CheckInModal } from '../components/CheckInModal'
 import { dateKey, PlanningService, type ResolvedSession } from '../services/planning.service'
 import { getWeatherNow, type WeatherNow } from '../services/weather.service'
 import { loadHealth, saveHealth, type HealthValues } from '../services/health.service'
-import { formatToday } from './today-mock'
 import { useAppData } from '../data/db'
 
 interface CheckInTarget {
   label: string
   promptLabel: string
+}
+
+function formatToday(date = new Date()): string {
+  const label = date.toLocaleDateString('it-IT', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  })
+  return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
 export default function Today() {
