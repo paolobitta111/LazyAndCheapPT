@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { WorkoutLog, SetLog, ExerciseLog } from '../models/entities'
 
 import { useAppData } from '../data/db'
+import { dateKey } from '../services/planning.service'
 
 interface UseWorkoutSessionOpts {
   plannedSessionId: string
@@ -85,7 +86,7 @@ export function useWorkoutSession({
     const log: WorkoutLog = {
       id: `wl-${Date.now()}`,
       plannedSessionId,
-      date: new Date().toISOString().split('T')[0],
+      date: dateKey(new Date()),
       notes: '',
       planId,
       planVersion: plan?.version,

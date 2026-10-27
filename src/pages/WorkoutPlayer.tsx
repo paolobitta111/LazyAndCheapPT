@@ -1,54 +1,67 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useWorkoutSession } from '../hooks/useWorkoutSession'
 import { ExerciseSetRow } from '../components/ExerciseSetRow'
 import { useAppData } from '../data/db'
-import type { PlannedSession } from '../models/entities'
+import { dateKey } from '../services/planning.service'
+import type { PlannedSession, SetLog } from '../models/entities'
 
 export default function WorkoutPlayer() {
   const { planId } = useParams<{ planId: string }>()
+  const repos = useAppData()
+  const today = dateKey(new Date())
+
   const [plannedSession, setPlannedSession] = useState<PlannedSession | null>(null)
-  const { plannedSessionRepo } = useAppData()
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      if (planId) {
-        const sessions = await plannedSessionRepo.listByDate(new Date().toISOString().slice(0, 10))
-        const session = sessions.find((s) => s.planId === planId)
-        if (session) setPlannedSession(session)
-      }
-    }
-    fetchSession()
-  }, [planId])
-
-  if (!plannedSession) return null
-  const session = useWorkoutSession({ plannedSessionId: plannedSession.id!, planId: plannedSession.planId })
+  const [planName, setPlanName] = useState<string>('Sessione')
   const [kg, setKg] = useState<number>(0)
   const [reps, setReps] = useState<number>(0)
   const [rpe, setRpe] = useState<number | undefined>(undefined)
   const [sessionNotes, setSessionNotes] = useState('')
   const [isClosing, setIsClosing] = useState(false)
-  const [planName, setPlanName] = useState<string>('Sessione')
+
+  const session = useWorkoutSession({
+    plannedSessionId: plannedSession?.id ?? '',
+    planId: plannedSession?.planId,
+  })
 
   useEffect(() => {
-    session.startSession()
+    if (!planId) return
+    void repos.plannedSessionRepo.listByDate(today).then((sessions) => {
+      setPlannedSession(sessions.find((entry) => entry.planId === planId) ?? null)
+    })
+  }, [planId, today, repos.plannedSessionRepo])
+
+  useEffect(() => {
+    if (!plannedSession?.planId) return
+    void repos.trainingPlanRepo.get(plannedSession.planId).then((plan) => {
+      if (plan) setPlanName(plan.name)
+    })
+  }, [plannedSession?.planId, repos.trainingPlanRepo])
+
+  const startedIdRef = plannedSession?.id
+  useEffect(() => {
+    if (!startedIdRef) return
+    void session.startSession()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [startedIdRef])
 
-  useEffect(() => {
-    const loadPlanName = async () => {
-      const { trainingPlanRepo } = useAppData()
-      if (plannedSession.planId) {
-        const plan = await trainingPlanRepo.get(plannedSession.planId)
-        if (plan) setPlanName(plan.name)
-      }
-    }
-    loadPlanName()
-  }, [plannedSession.planId])
+  if (!plannedSession) {
+    return (
+      <div>
+        <h1>Avvio sessione...</h1>
+      </div>
+    )
+  }
+
+  if (!session.workoutLog) {
+    return (
+      <div>
+        <h1>Avvio sessione...</h1>
+      </div>
+    )
+  }
 
   const handleAddSet = async () => {
-    // In a real impl, this would create an ExerciseLog first
-    // For now, we just add a set to the first exercise
     const exerciseLogId = `ex-log-${Date.now()}`
     await session.addSet(exerciseLogId, reps, kg, rpe)
     setReps(0)
@@ -56,7 +69,7 @@ export default function WorkoutPlayer() {
     setRpe(undefined)
   }
 
-  const handleToggleComplete = async (setLog: import('../models/entities').SetLog) => {
+  const handleToggleComplete = async (setLog: SetLog) => {
     await session.completeSet(setLog)
   }
 
@@ -69,14 +82,6 @@ export default function WorkoutPlayer() {
     const mins = Math.floor(sec / 60)
     const secs = sec % 60
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-  }
-
-  if (!session.workoutLog) {
-    return (
-      <div>
-        <h1>Avvio sessione...</h1>
-      </div>
-    )
   }
 
   return (
@@ -159,19 +164,11 @@ export default function WorkoutPlayer() {
           placeholder="Note sulla sessione..."
           value={sessionNotes}
           onChange={(e) => setSessionNotes(e.target.value)}
-          aria-label="Note di sessione"
         />
+        <button className="btn btn-primary" type="button" onClick={handleCloseSession}>
+          {isClosing ? 'Chiusura...' : 'Chiudi sessione'}
+        </button>
       </div>
-
-      <button
-        className="btn"
-        type="button"
-        onClick={handleCloseSession}
-        disabled={isClosing}
-        aria-label="Chiudi sessione"
-      >
-        {isClosing ? 'Salvataggio...' : 'Chiudi Sessione'}
-      </button>
     </div>
   )
 }
