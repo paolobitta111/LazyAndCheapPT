@@ -27,8 +27,11 @@ export function MetricCubes(props: {
   const steps = props.health.steps === undefined ? dash : String(props.health.steps).replace(/\B(?=(\d{3})+(?!\d))/g, '.')
 
   return (
-    <div className="metrics-row" style={{ display: 'flex', marginTop: '4px' }}>
-      <div className="group group-half" style={{ flex: 1, justifyContent: 'center', gap: '8px' }}>
+    <div className="metrics-row group" style={{ flexDirection: 'row', gap: 0, padding: 0, overflow: 'hidden', marginTop: '4px' }}>
+      <div
+        className="group-half"
+        style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '8px', padding: '12px 14px' }}
+      >
         <div style={itemStyle}>
           <svg viewBox="0 0 24 24" aria-hidden="true" {...iconStyle}>
             <path d="M7 17h10a4 4 0 0 0 .4-8 6 6 0 0 0-11.5 1.6A3.5 3.5 0 0 0 7 17z" />
@@ -45,8 +48,8 @@ export function MetricCubes(props: {
       <button
         type="button"
         aria-label="Modifica salute"
-        className="group group-half"
-        style={{ flex: 1, justifyContent: 'center', gap: '8px', borderLeft: '1px solid var(--sep)', borderRadius: '0 var(--r-card) var(--r-card) 0', cursor: 'pointer', font: 'inherit', color: 'inherit', textAlign: 'left' }}
+        className="group-half"
+        style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '8px', padding: '12px 14px', border: 0, borderLeft: '1px solid var(--sep)', background: 'transparent', borderRadius: 0, cursor: 'pointer', font: 'inherit', color: 'inherit', textAlign: 'left' }}
         onClick={props.onEditHealth}
       >
         <div style={itemStyle}>

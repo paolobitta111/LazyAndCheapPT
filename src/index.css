@@ -67,7 +67,7 @@ nav.glass-bar {
   position: fixed;
   left: 50%;
   z-index: 20;
-  width: min(32rem, calc(100% - 1.5rem));
+  width: min(30rem, calc(100% - 2rem));
   translate: -50% 0;
 }
 

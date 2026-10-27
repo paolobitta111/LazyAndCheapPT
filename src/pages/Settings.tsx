@@ -41,42 +41,48 @@ export default function Settings() {
       </p>
       <button className="btn" type="button" onClick={() => setOffline(!navigator.onLine)}>Aggiorna stato rete</button>
       <h2>Backup</h2>
-      <button className="btn btn-primary" type="button" onClick={exportZip}>Esporta ZIP</button>
-      <input
-        type="file"
-        accept=".zip,application/zip"
-        onChange={async (event) => {
-          const file = event.target.files?.[0]
-          if (!file) return
-          const bytes = new Uint8Array(await file.arrayBuffer())
-          try {
-            const parsed = readBackupZip(bytes)
-            setPending(bytes)
-            setPreview(parsed.preview)
-            setMessage('Anteprima pronta. Nessuna sostituzione finché non confermi.')
-          } catch (error) {
-            setPreview(null)
-            setMessage(error instanceof Error ? error.message : 'ZIP non valido')
-          }
-        }}
-      />
-      {preview && (
-        <div className="group">
-          <p>Creato: {preview.createdAt ?? 'sconosciuto'}</p>
-          <p>GPX: {preview.gpxFiles}</p>
-          <pre>{JSON.stringify(preview.counts, null, 2)}</pre>
-          <button className="btn" type="button" onClick={restore}>Sostituisci dati locali</button>
-        </div>
-      )}
+      <div className="group">
+        <button className="btn btn-tint" type="button" onClick={exportZip}>Esporta ZIP</button>
+        <input
+          type="file"
+          accept=".zip,application/zip"
+          onChange={async (event) => {
+            const file = event.target.files?.[0]
+            if (!file) return
+            const bytes = new Uint8Array(await file.arrayBuffer())
+            try {
+              const parsed = readBackupZip(bytes)
+              setPending(bytes)
+              setPreview(parsed.preview)
+              setMessage('Anteprima pronta. Nessuna sostituzione finché non confermi.')
+            } catch (error) {
+              setPreview(null)
+              setMessage(error instanceof Error ? error.message : 'ZIP non valido')
+            }
+          }}
+        />
+        {preview && (
+          <div className="group" style={{ background: 'var(--surface-2)' }}>
+            <p>Creato: {preview.createdAt ?? 'sconosciuto'}</p>
+            <p>GPX: {preview.gpxFiles}</p>
+            <pre className="t-cap nums" style={{ overflowX: 'auto' }}>{JSON.stringify(preview.counts, null, 2)}</pre>
+            <button className="btn" type="button" onClick={restore}>Sostituisci dati locali</button>
+          </div>
+        )}
+      </div>
       <h2>LLM locale opzionale</h2>
-      <p>Disabilitato di default. Non è richiesto per usare l&apos;app. Le credenziali non entrano nel backup.</p>
-      <label>
-        <input type="checkbox" checked={llm.enabled} onChange={(event) => setLlm({ ...llm, enabled: event.target.checked })} /> Abilita
-      </label>
-      <input className="field" placeholder="http://indirizzo-lan:11434/v1" value={llm.endpoint} onChange={(event) => setLlm({ ...llm, endpoint: event.target.value })} />
-      <input className="field" placeholder="modello" value={llm.model} onChange={(event) => setLlm({ ...llm, model: event.target.value })} />
-      <button className="btn" type="button" onClick={() => { saveLocalLlmConfig(llm); setMessage('Configurazione locale salvata sul dispositivo.') }}>Salva</button>
-      <button className="btn" type="button" onClick={async () => setMessage((await testLocalLlm(llm)).message)}>Prova connessione</button>
+      <div className="group">
+        <p className="t-sub" style={{ color: 'var(--label-2)' }}>Disabilitato di default. Non è richiesto per usare l&apos;app. Le credenziali non entrano nel backup.</p>
+        <label>
+          <input type="checkbox" checked={llm.enabled} onChange={(event) => setLlm({ ...llm, enabled: event.target.checked })} /> Abilita
+        </label>
+        <input className="field" placeholder="http://indirizzo-lan:11434/v1" value={llm.endpoint} onChange={(event) => setLlm({ ...llm, endpoint: event.target.value })} />
+        <input className="field" placeholder="modello" value={llm.model} onChange={(event) => setLlm({ ...llm, model: event.target.value })} />
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn" type="button" onClick={() => { saveLocalLlmConfig(llm); setMessage('Configurazione locale salvata sul dispositivo.') }}>Salva</button>
+          <button className="btn" type="button" onClick={async () => setMessage((await testLocalLlm(llm)).message)}>Prova connessione</button>
+        </div>
+      </div>
       {message && <p>{message}</p>}
     </div>
   )

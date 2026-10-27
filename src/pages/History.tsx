@@ -33,19 +33,21 @@ export default function History() {
   return (
     <div>
       <h1>Storico</h1>
-      <p>Dati salvati solo su questo dispositivo.</p>
-      <select className="field" value={String(days ?? 'all')} onChange={(event) => setDays(event.target.value === 'all' ? null : Number(event.target.value))}>
-        <option value="7">Ultima settimana</option>
-        <option value="30">Ultimo mese</option>
-        <option value="90">Ultimi 3 mesi</option>
-        <option value="all">Tutto</option>
-      </select>
-      <select className="field" value={type} onChange={(event) => setType(event.target.value as 'all' | 'workout' | 'cardio')}>
-        <option value="all">Tutti</option>
-        <option value="workout">Workout</option>
-        <option value="cardio">Cardio</option>
-      </select>
-      <input className="field" value={query} placeholder="Cerca note o scheda" onChange={(event) => setQuery(event.target.value)} />
+      <p className="t-sub" style={{ color: 'var(--label-2)' }}>Dati salvati solo su questo dispositivo.</p>
+      <div className="group">
+        <select className="field" value={String(days ?? 'all')} onChange={(event) => setDays(event.target.value === 'all' ? null : Number(event.target.value))}>
+          <option value="7">Ultima settimana</option>
+          <option value="30">Ultimo mese</option>
+          <option value="90">Ultimi 3 mesi</option>
+          <option value="all">Tutto</option>
+        </select>
+        <select className="field" value={type} onChange={(event) => setType(event.target.value as 'all' | 'workout' | 'cardio')}>
+          <option value="all">Tutti</option>
+          <option value="workout">Workout</option>
+          <option value="cardio">Cardio</option>
+        </select>
+        <input className="field" value={query} placeholder="Cerca note o scheda" onChange={(event) => setQuery(event.target.value)} />
+      </div>
       {error && <p>{error}</p>}
       {visible.length === 0 && <p>Nessun log nel filtro.</p>}
       <div className="group" style={{ padding: '0.25rem 1rem' }}>

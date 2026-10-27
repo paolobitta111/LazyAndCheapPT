@@ -62,22 +62,24 @@ export default function Cardio() {
   return (
     <div>
       <h1>Cardio</h1>
-      <label>Sport</label>
-      <select className="field" value={sport} onChange={(event) => setSport(event.target.value as Sport)}>
-        <option value="running">Corsa</option>
-        <option value="cycling">Bici</option>
-        <option value="other">Altro</option>
-      </select>
+      <div className="group">
+        <label>Sport</label>
+        <select className="field" value={sport} onChange={(event) => setSport(event.target.value as Sport)}>
+          <option value="running">Corsa</option>
+          <option value="cycling">Bici</option>
+          <option value="other">Altro</option>
+        </select>
 
-      <label>Durata (min)</label>
-      <input className="field" type="number" min={0} value={durationMin} onChange={(event) => setDurationMin(Number(event.target.value))} />
-      <label>Distanza (km)</label>
-      <input className="field" type="number" min={0} step={0.1} value={distanceKm} onChange={(event) => setDistanceKm(Number(event.target.value))} />
+        <label>Durata (min)</label>
+        <input className="field" type="number" min={0} value={durationMin} onChange={(event) => setDurationMin(Number(event.target.value))} />
+        <label>Distanza (km)</label>
+        <input className="field" type="number" min={0} step={0.1} value={distanceKm} onChange={(event) => setDistanceKm(Number(event.target.value))} />
 
-      <label>Note</label>
-      <textarea className="field" value={notes} onChange={(event) => setNotes(event.target.value)} />
+        <label>Note</label>
+        <textarea className="field" value={notes} onChange={(event) => setNotes(event.target.value)} />
 
-      <button className="btn btn-tint" type="button" onClick={saveFree}>Salva sessione libera</button>
+        <button className="btn btn-tint" type="button" onClick={saveFree}>Salva sessione libera</button>
+      </div>
 
       <h2>Segmenti</h2>
       {segments.map((segment, index) => (
@@ -111,11 +113,14 @@ export default function Cardio() {
           />
         </div>
       ))}
-      <button className="btn" type="button" onClick={() => setSegments((current) => [...current, emptySegment()])}>Aggiungi segmento</button>
-      <button className="btn" type="button" onClick={saveSegments}>Salva con segmenti</button>
+      <div className="group">
+        <button className="btn" type="button" onClick={() => setSegments((current) => [...current, emptySegment()])}>Aggiungi segmento</button>
+        <button className="btn" type="button" onClick={saveSegments}>Salva con segmenti</button>
+      </div>
       <h2>GPX</h2>
-      <p>Il file resta sul dispositivo. Nessuna mappa.</p>
-      <input
+      <div className="group">
+        <p className="t-sub" style={{ color: 'var(--label-2)' }}>Il file resta sul dispositivo. Nessuna mappa.</p>
+        <input
         style={{ marginBottom: '12px' }}
         type="file"
         accept=".gpx,application/gpx+xml,text/xml"
@@ -139,6 +144,7 @@ export default function Cardio() {
         }}
       />
       {gpxSummary && <p>{gpxSummary}</p>}
+      </div>
       {error && <p className="text-down">{error}</p>}
       {savedId && <p className="text-up">Salvato: {savedId}</p>}
     </div>

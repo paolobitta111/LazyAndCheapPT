@@ -71,23 +71,31 @@ export default function LlmBridge() {
     <div>
       <h1>Scambio LLM</h1>
       <p className="group t-foot" style={{ color: 'var(--label-2)' }}>{PRIVACY_REMINDER}</p>
-      <select className="field" value={kind} onChange={(event) => setKind(event.target.value as PromptKind)}>
-        <option value="create-plan">Crea scheda</option>
-        <option value="revise-plan">Modifica scheda</option>
-        <option value="session-feedback">Feedback sessione</option>
-        <option value="propose-update">Proponi aggiornamento</option>
-      </select>
-      <label>
-        <input type="checkbox" checked={includeNotes} onChange={(event) => setIncludeNotes(event.target.checked)} /> Includi note
-      </label>
-      <textarea className="field" rows={8} value={contextText} onChange={(event) => setContextText(event.target.value)} />
-      <button className="btn" type="button" onClick={() => { const packed = selectedContext(); if (packed) void copyText(packed.prompt) }}>Copia prompt</button>
-      <button className="btn" type="button" onClick={() => { const packed = selectedContext(); if (packed) void copyText(packed.json) }}>Copia JSON</button>
+      <div className="group">
+        <select className="field" value={kind} onChange={(event) => setKind(event.target.value as PromptKind)}>
+          <option value="create-plan">Crea scheda</option>
+          <option value="revise-plan">Modifica scheda</option>
+          <option value="session-feedback">Feedback sessione</option>
+          <option value="propose-update">Proponi aggiornamento</option>
+        </select>
+        <label>
+          <input type="checkbox" checked={includeNotes} onChange={(event) => setIncludeNotes(event.target.checked)} /> Includi note
+        </label>
+        <textarea className="field" rows={8} value={contextText} onChange={(event) => setContextText(event.target.value)} />
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn" type="button" onClick={() => { const packed = selectedContext(); if (packed) void copyText(packed.prompt) }}>Copia prompt</button>
+          <button className="btn" type="button" onClick={() => { const packed = selectedContext(); if (packed) void copyText(packed.json) }}>Copia JSON</button>
+        </div>
+      </div>
       <h2>Risposta</h2>
-      <textarea className="field" rows={8} value={responseText} onChange={(event) => setResponseText(event.target.value)} />
-      <button className="btn" type="button" onClick={previewImport}>Anteprima</button>
-      <button className="btn btn-tint" type="button" disabled={!preview} onClick={confirmImport}>Conferma import</button>
-      {preview && <pre className="group t-cap nums" style={{ overflowX: 'auto', whiteSpace: 'pre-wrap' }}>{preview}</pre>}
+      <div className="group">
+        <textarea className="field" rows={8} value={responseText} onChange={(event) => setResponseText(event.target.value)} />
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button className="btn" type="button" onClick={previewImport}>Anteprima</button>
+          <button className="btn btn-tint" type="button" disabled={!preview} onClick={confirmImport}>Conferma import</button>
+        </div>
+        {preview && <pre className="group t-cap nums" style={{ background: 'var(--surface-2)', overflowX: 'auto', whiteSpace: 'pre-wrap' }}>{preview}</pre>}
+      </div>
       {message && <p>{message}</p>}
     </div>
   )
