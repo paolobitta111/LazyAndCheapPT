@@ -123,6 +123,7 @@ export default function Calendar() {
 
   return (
     <div style={{ height: '100%' }}>
+      <h1>Calendario</h1>
       <MonthCalendar
         year={year}
         monthIndex={monthIndex}

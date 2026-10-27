@@ -23,7 +23,7 @@ describe('App chrome', () => {
   it('shows an ink title capsule and four tabs on Oggi', () => {
     const { container } = renderAt('/')
     const title = container.querySelector('header.glass-bar')
-    expect(container.querySelector('header h1')?.textContent).toBe('Oggi')
+    expect(container.querySelector('header .bar-title')?.textContent).toBe('Oggi')
     expect(container.querySelector('header button')?.textContent).toBe('LLM')
     expect([...container.querySelectorAll('nav button')].map((button) => button.textContent?.trim())).toEqual([
       'Oggi',

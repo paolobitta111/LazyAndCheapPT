@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom'
 import { BottomNav } from './components/BottomNav'
 import Today from './pages/Today'
@@ -29,6 +29,14 @@ export function pageTitle(pathname: string): string {
 function LayoutShell() {
   const location = useLocation()
   const navigate = useNavigate()
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    onScroll()
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const handleNavigate = useCallback((tab: string) => {
     navigate(tab)
@@ -37,9 +45,9 @@ function LayoutShell() {
   const activeTab = tabIds.has(location.pathname) ? location.pathname : ''
 
   return (
-    <div className="layout-shell">
+    <div className="layout-shell" data-scrolled={scrolled ? 'true' : 'false'}>
       <header className="glass-bar">
-        <h1>{pageTitle(location.pathname)}</h1>
+        <p className="bar-title">{pageTitle(location.pathname)}</p>
         <button className="btn" type="button" onClick={() => navigate('/llm')}>LLM</button>
       </header>
       <main className="main-content" role="main">

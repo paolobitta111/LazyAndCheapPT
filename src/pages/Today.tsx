@@ -85,6 +85,7 @@ export default function Today() {
 
   return (
     <div>
+      <h1>Oggi</h1>
       <p className="today-date">{formatToday()}</p>
 
       {resolved.length === 0 ? (

@@ -41,19 +41,29 @@ describe('glass tokens', () => {
   })
 
   it('drops Bulma and uses the system font', () => {
-    const index = read('src/index.css')
-    expect(index).not.toContain('bulma')
-    expect(index).toContain('-apple-system, BlinkMacSystemFont, system-ui, sans-serif')
+    const css = read('src/styles/glass.css')
+    expect(css).toContain('-apple-system, BlinkMacSystemFont, system-ui, sans-serif')
     const pkg = JSON.parse(read('package.json')) as { dependencies?: Record<string, string> }
     expect(pkg.dependencies).not.toHaveProperty('bulma')
   })
 
   it('lays out the glass chrome: fixed capsule bars and centered column', () => {
     const index = read('src/index.css')
+    expect(index).not.toContain('bulma')
     expect(index).not.toContain('navbar')
     expect(index).not.toContain('bottom-nav')
     expect(index).toContain('.layout-shell')
     expect(index).toMatch(/header\.glass-bar,\s*nav\.glass-bar\s*\{[^}]*position:\s*fixed/)
     expect(index).toMatch(/\.main-content\s*\{[^}]*width:\s*min\(32rem/)
+  })
+
+  it('runs content edge-to-edge under the bars with a scroll-aware bar title', () => {
+    const index = read('src/index.css')
+    expect(index).not.toMatch(/\.layout-shell\s*\{[^}]*padding:\s*5\.25rem/)
+    expect(index).toMatch(/\.bar-title\s*\{[^}]*opacity:\s*0/)
+    expect(index).toMatch(/\[data-scrolled="true"\][^{]*\.bar-title\s*\{[^}]*opacity:\s*1/)
+    expect(index).toMatch(/env\(safe-area-inset-bottom\)/)
+    expect(index).not.toMatch(/text-transform:\s*uppercase/)
+    expect(index).not.toContain('#0b0b0d')
   })
 })
