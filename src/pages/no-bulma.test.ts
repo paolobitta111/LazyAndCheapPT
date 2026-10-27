@@ -20,9 +20,7 @@ const pages = [
   'src/pages/Today.tsx',
   'src/pages/Plans.tsx',
   'src/pages/Calendar.tsx',
-  'src/pages/History.tsx',
   'src/pages/WorkoutPlayer.tsx',
-  'src/pages/Cardio.tsx',
   'src/pages/LlmBridge.tsx',
   'src/pages/Settings.tsx',
   'src/pages/NotFound.tsx',
@@ -44,6 +42,6 @@ describe('content pages', () => {
     const app = readFileSync(resolve(root, 'src/App.tsx'), 'utf8')
     expect(today).not.toContain('href="#/llm"')
     expect(settings).not.toContain('href="#/llm"')
-    expect(app).toContain("navigate('/llm')")
+    expect(app).not.toContain('href="#/llm"')
   })
 })

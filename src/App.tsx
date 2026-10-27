@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom'
 import { BottomNav } from './components/BottomNav'
+import { NavIcon } from './components/NavIcon'
 import Today from './pages/Today'
 import Plans from './pages/Plans'
 import Calendar from './pages/Calendar'
-import History from './pages/History'
 import NotFound from './pages/NotFound'
 import WorkoutPlayer from './pages/WorkoutPlayer'
-import Cardio from './pages/Cardio'
 import LlmBridge from './pages/LlmBridge'
 import Settings from './pages/Settings'
 import { DataProvider } from './data/db'
@@ -18,10 +17,8 @@ export function pageTitle(pathname: string): string {
   if (pathname === '/') return 'Oggi'
   if (pathname === '/schede') return 'Schede'
   if (pathname === '/calendario') return 'Calendario'
-  if (pathname === '/storico') return 'Storico'
   if (pathname === '/impostazioni') return 'Impostazioni'
   if (pathname === '/llm') return 'LLM'
-  if (pathname === '/cardio') return 'Cardio'
   if (pathname.startsWith('/workout/')) return 'Sessione'
   return 'Pagina'
 }
@@ -48,16 +45,21 @@ function LayoutShell() {
     <div className="layout-shell" data-scrolled={scrolled ? 'true' : 'false'}>
       <header className="glass-bar">
         <p className="bar-title">{pageTitle(location.pathname)}</p>
-        <button className="btn" type="button" onClick={() => navigate('/llm')}>LLM</button>
+        <button
+          className="btn"
+          type="button"
+          aria-label="Impostazioni"
+          onClick={() => navigate('/impostazioni')}
+        >
+          <NavIcon name="impostazioni" filled={false} />
+        </button>
       </header>
       <main className="main-content" role="main">
         <Routes>
           <Route path="/" element={<Today />} />
           <Route path="/schede" element={<Plans />} />
           <Route path="/calendario" element={<Calendar />} />
-          <Route path="/storico" element={<History />} />
           <Route path="/workout/:planId" element={<WorkoutPlayer />} />
-          <Route path="/cardio" element={<Cardio />} />
           <Route path="/llm" element={<LlmBridge />} />
           <Route path="/impostazioni" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
