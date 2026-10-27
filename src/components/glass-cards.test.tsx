@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { CalendarSlot } from './CalendarSlot'
 import { ErrorBoundary } from './ErrorBoundary'
 import { ExerciseRow } from './ExerciseRow'
 import { ExerciseSetRow } from './ExerciseSetRow'
@@ -16,7 +15,6 @@ function rootClass(ui: React.ReactElement): string {
 describe('glass cards', () => {
   it('uses glass on each card root', () => {
     expect(rootClass(<SessionCard title="Panca" status="active" />)).toContain('glass')
-    expect(rootClass(<CalendarSlot day="Lunedì" time="08:00" planName="Petto" hasPlan />)).toContain('glass')
     const history = render(<HistoryItem date="25 ott" type="workout" duration="45 min" />)
     expect(history.container.firstElementChild?.className).toContain('glass')
     expect(history.container.innerHTML).not.toContain('is-primary')

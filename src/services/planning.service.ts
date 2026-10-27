@@ -65,8 +65,49 @@ export class PlanningService {
    * deduped by planId.
    */
   async resolveDay(date: string): Promise<ResolvedSession[]> {
-    const plans = await this.trainingPlanRepo.list()
-    const rows = await this.plannedSessionRepo.listByDate(date)
+    const [plans, rows, workouts, cardios] = await Promise.all([
+      this.trainingPlanRepo.list(),
+      this.plannedSessionRepo.listByDate(date),
+      this.workoutLogRepo.listByDate(date),
+      this.cardioLogRepo.listByDate(date),
+    ])
+    return this.resolveFrom(date, plans, rows, workouts, cardios)
+  }
+
+  async resolveMonth(year: number, monthIndex: number): Promise<MonthDay[]> {
+    // Batched: one read per table, then in-memory resolution (a per-day query
+    // would be 4 × daysInMonth IndexedDB reads on every month render).
+    const [plans, rows, workouts, cardios] = await Promise.all([
+      this.trainingPlanRepo.list(),
+      this.plannedSessionRepo.list(),
+      this.workoutLogRepo.list(),
+      this.cardioLogRepo.list(),
+    ])
+    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate()
+    const days: MonthDay[] = []
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+      days.push({
+        day,
+        sessions: this.resolveFrom(
+          date,
+          plans,
+          rows.filter((row) => row.date === date),
+          workouts.filter((log) => log.date === date),
+          cardios.filter((log) => log.date === date),
+        ),
+      })
+    }
+    return days
+  }
+
+  private resolveFrom(
+    date: string,
+    plans: TrainingPlan[],
+    rows: PlannedSession[],
+    workouts: { planId?: string; date: string }[],
+    cardios: CardioLog[],
+  ): ResolvedSession[] {
     const weekday = weekdayIndex(new Date(`${date}T12:00:00`))
 
     const cancelled = new Set(rows.filter((row) => row.status === 'cancelled').map((row) => row.planId))
@@ -89,11 +130,6 @@ export class PlanningService {
       byPlan.set(planId, { plan: { ...plan, id: planId }, order: RULE_LESS_ORDER })
     }
 
-    const [workouts, cardios] = await Promise.all([
-      this.workoutLogRepo.listByDate(date),
-      this.cardioLogRepo.listByDate(date),
-    ])
-
     const resolved: ResolvedSession[] = [...byPlan.entries()].map(([planId, { plan, order }]) => ({
       planId,
       name: plan.name,
@@ -104,16 +140,6 @@ export class PlanningService {
     }))
 
     return resolved.sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
-  }
-
-  async resolveMonth(year: number, monthIndex: number): Promise<MonthDay[]> {
-    const daysInMonth = new Date(year, monthIndex + 1, 0).getDate()
-    const days: MonthDay[] = []
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-      days.push({ day, sessions: await this.resolveDay(date) })
-    }
-    return days
   }
 
   async skip(planId: string, date: string): Promise<void> {

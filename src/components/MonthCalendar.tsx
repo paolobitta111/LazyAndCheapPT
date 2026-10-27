@@ -1,5 +1,6 @@
-import type { MockDaySession } from '../pages/today-mock'
-import { mockSchede } from '../pages/today-mock'
+// ============================================================================
+// MonthCalendar — full-month grid with per-day sport marks
+// ============================================================================
 
 export const monthNames = [
   'gennaio',
@@ -24,15 +25,10 @@ export const sportDotColors: Record<string, string> = {
 
 const weekdayLetters = ['L', 'M', 'M', 'G', 'V', 'S', 'D']
 
-const dotStyle = (color: string) => ({
-  position: 'absolute',
-  right: '5px',
-  bottom: '5px',
-  width: '7px',
-  height: '7px',
-  borderRadius: '50%',
-  background: color,
-}) as const
+export interface DayMark {
+  sport?: string
+  done: boolean
+}
 
 export function buildMonthCells(year: number, monthIndex: number): Array<number | null> {
   const firstWeekday = new Date(year, monthIndex, 1).getDay()
@@ -45,10 +41,22 @@ export function buildMonthCells(year: number, monthIndex: number): Array<number 
   return cells
 }
 
+const dotStyle = (color: string, index: number) =>
+  ({
+    position: 'absolute',
+    bottom: '5px',
+    right: `${5 + index * 9}px`,
+    width: '7px',
+    height: '7px',
+    borderRadius: '50%',
+    border: `1.5px solid ${color}`,
+    boxSizing: 'border-box',
+  }) as const
+
 export function MonthCalendar(props: {
   year: number
   monthIndex: number
-  sessions: MockDaySession[]
+  days: { day: number; marks: DayMark[] }[]
   today: { year: number; monthIndex: number; day: number } | null
   selectedDay: number | null
   onSelectDay: (day: number) => void
@@ -78,10 +86,7 @@ export function MonthCalendar(props: {
           if (day === null) {
             return <div key={`empty-${index}`} className="month-cell month-cell-empty" />
           }
-          const session = props.sessions.find((item) => item.day === day)
-          const sport = session
-            ? mockSchede.find((scheda) => scheda.id === session.schedaId)?.sport
-            : undefined
+          const marks = props.days.find((entry) => entry.day === day)?.marks ?? []
           const isToday =
             props.today !== null &&
             props.today.year === props.year &&
@@ -110,7 +115,10 @@ export function MonthCalendar(props: {
               }}
             >
               <span style={{ position: 'absolute', top: '6px', left: '8px' }}>{day}</span>
-              {sport ? <span data-sport={sport} style={dotStyle(sportDotColors[sport])} /> : null}
+              {marks.map((mark, markIndex) => {
+                const color = sportDotColors[mark.sport ?? ''] ?? '#d0d0d4'
+                return <span key={markIndex} data-mark={mark.done ? 'done' : 'planned'} style={dotStyle(color, markIndex)} />
+              })}
             </button>
           )
         })}

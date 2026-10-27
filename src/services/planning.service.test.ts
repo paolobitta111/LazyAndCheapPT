@@ -95,10 +95,12 @@ function makeService(store: Store): PlanningService {
     listByDate: async (date) => store.rows.filter((row) => row.date === date),
     delete: async () => undefined,
   }
-  const workoutLogRepo: Pick<WorkoutLogRepo, 'listByDate'> = {
+  const workoutLogRepo: Pick<WorkoutLogRepo, 'listByDate' | 'list'> = {
+    list: async () => [...store.workouts],
     listByDate: async (date) => store.workouts.filter((log) => log.date === date),
   }
-  const cardioLogRepo: Pick<CardioLogRepo, 'listByDate'> = {
+  const cardioLogRepo: Pick<CardioLogRepo, 'listByDate' | 'list'> = {
+    list: async () => [...store.cardios],
     listByDate: async (date) => store.cardios.filter((log) => log.date === date),
   }
   return new PlanningService(

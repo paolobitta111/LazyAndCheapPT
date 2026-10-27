@@ -1,91 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { AssignModal } from '../components/AssignModal'
 import { DaySummaryModal } from '../components/DaySummaryModal'
 import { MonthCalendar, monthNames } from '../components/MonthCalendar'
-import { mockSchede, octoberMonthIndex, octoberSessions, octoberYear } from './today-mock'
-import type { MockDaySession } from './today-mock'
-import type { PlannedSession, TrainingPlan } from '../models/entities'
-import type { PlannedSessionRepo, TrainingPlanRepo } from '../data/repositories'
-
-export interface CalendarSlotData {
-  day: string
-  date: string
-  time: string
-  planName: string
-  hasPlan: boolean
-}
-
-function getWeekStart(date: Date): Date {
-  const d = new Date(date)
-  const day = d.getDay()
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1)
-  d.setDate(diff)
-  d.setHours(0, 0, 0, 0)
-  return d
-}
-
-function getDayName(date: Date): string {
-  const days = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
-  const dayIndex = (date.getDay() + 6) % 7
-  return days[dayIndex]
-}
-
-function formatDate(date: Date): string {
-  return date.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })
-}
-
-export function useCalendarWeek(
-  plannedSessionRepo: PlannedSessionRepo,
-  trainingPlanRepo: TrainingPlanRepo,
-): CalendarSlotData[] {
-  const [slots, setSlots] = useState<CalendarSlotData[]>([])
-
-  useEffect(() => {
-    let cancelled = false
-    const load = async (): Promise<void> => {
-      const weekStart = getWeekStart(new Date())
-      const fetchedSlots: CalendarSlotData[] = []
-
-      for (let i = 0; i < 7; i++) {
-        const d = new Date(weekStart)
-        d.setDate(d.getDate() + i)
-        const dateStr = d.toISOString().split('T')[0]
-
-        const sessions: PlannedSession[] = await plannedSessionRepo.listByDate(dateStr)
-
-        if (sessions.length > 0) {
-          for (const session of sessions) {
-            const plan: TrainingPlan | null = await trainingPlanRepo.get(session.planId)
-            if (plan) {
-              fetchedSlots.push({
-                day: getDayName(d),
-                date: formatDate(d),
-                time: '08:00',
-                planName: plan.name,
-                hasPlan: true,
-              })
-            }
-          }
-        } else {
-          fetchedSlots.push({
-            day: getDayName(d),
-            date: formatDate(d),
-            time: '',
-            planName: '',
-            hasPlan: false,
-          })
-        }
-      }
-
-      if (!cancelled) setSlots(fetchedSlots)
-    }
-    void load()
-    return () => {
-      cancelled = true
-    }
-  }, [plannedSessionRepo, trainingPlanRepo])
-
-  return slots
-}
+import { PlanningService, type MonthDay, type ResolvedSession } from '../services/planning.service'
+import { useAppData } from '../data/db'
+import type { CardioLog, WorkoutLog } from '../models/entities'
 
 function formatDayLabel(year: number, monthIndex: number, day: number): string {
   const date = new Date(year, monthIndex, day)
@@ -95,36 +14,111 @@ function formatDayLabel(year: number, monthIndex: number, day: number): string {
   return label.charAt(0).toUpperCase() + label.slice(1)
 }
 
+function dateOfMonth(year: number, monthIndex: number, day: number): string {
+  return `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+}
+
+function formatDuration(durationSec: number): string {
+  return `${Math.round(durationSec / 60)} min`
+}
+
 export default function Calendar() {
-  const [year, setYear] = useState(octoberYear)
-  const [monthIndex, setMonthIndex] = useState(octoberMonthIndex)
+  const repos = useAppData()
+  const now = new Date()
+
+  const service = useMemo(
+    () =>
+      new PlanningService(
+        repos.trainingPlanRepo,
+        repos.plannedSessionRepo,
+        repos.workoutLogRepo,
+        repos.cardioLogRepo,
+      ),
+    [repos.trainingPlanRepo, repos.plannedSessionRepo, repos.workoutLogRepo, repos.cardioLogRepo],
+  )
+
+  const [year, setYear] = useState(now.getFullYear())
+  const [monthIndex, setMonthIndex] = useState(now.getMonth())
+  const [days, setDays] = useState<MonthDay[] | null>(null)
+  const [schede, setSchede] = useState<{ planId: string; name: string }[]>([])
   const [selectedDay, setSelectedDay] = useState<number | null>(null)
+  const [assignDay, setAssignDay] = useState<number | null>(null)
+  const [dayLogs, setDayLogs] = useState<{ workouts: WorkoutLog[]; cardios: CardioLog[] } | null>(null)
 
-  const isOctober = year === octoberYear && monthIndex === octoberMonthIndex
-  const sessions: MockDaySession[] = isOctober ? octoberSessions : []
-  const today = isOctober ? { year: octoberYear, monthIndex: octoberMonthIndex, day: 25 } : null
+  const refresh = useCallback(async () => {
+    const [monthDays, plans] = await Promise.all([
+      service.resolveMonth(year, monthIndex),
+      repos.trainingPlanRepo.list(),
+    ])
+    setDays(monthDays)
+    setSchede(
+      plans
+        .filter((plan) => plan.status === 'active' && plan.id)
+        .map((plan) => ({ planId: plan.id!, name: plan.name })),
+    )
+  }, [service, repos.trainingPlanRepo, year, monthIndex])
 
-  const selected = selectedDay === null ? null : sessions.find((session) => session.day === selectedDay) ?? null
-  const selectedScheda = selected ? mockSchede.find((scheda) => scheda.id === selected.schedaId) : undefined
+  useEffect(() => {
+    void refresh()
+  }, [refresh])
+
+  useEffect(() => {
+    if (selectedDay === null) {
+      setDayLogs(null)
+      return
+    }
+    const date = dateOfMonth(year, monthIndex, selectedDay)
+    void Promise.all([
+      repos.workoutLogRepo.listByDate(date),
+      repos.cardioLogRepo.listByDate(date),
+    ]).then(([workouts, cardios]) => setDayLogs({ workouts, cardios }))
+  }, [selectedDay, repos.workoutLogRepo, repos.cardioLogRepo, year, monthIndex])
+
+  const today = { year: now.getFullYear(), monthIndex: now.getMonth(), day: now.getDate() }
 
   function prevMonth() {
+    setSelectedDay(null)
+    setAssignDay(null)
     if (monthIndex === 0) {
       setMonthIndex(11)
       setYear((value) => value - 1)
     } else {
       setMonthIndex((value) => value - 1)
     }
-    setSelectedDay(null)
   }
 
   function nextMonth() {
+    setSelectedDay(null)
+    setAssignDay(null)
     if (monthIndex === 11) {
       setMonthIndex(0)
       setYear((value) => value + 1)
     } else {
       setMonthIndex((value) => value + 1)
     }
-    setSelectedDay(null)
+  }
+
+  function selectDay(day: number) {
+    const sessions = days?.find((entry) => entry.day === day)?.sessions ?? []
+    if (sessions.length > 0) {
+      setSelectedDay(day)
+    } else {
+      setAssignDay(day)
+    }
+  }
+
+  const first = selectedDay === null ? null : days?.find((entry) => entry.day === selectedDay)?.sessions[0] ?? null
+
+  function summaryFor(session: ResolvedSession): { summary: string; notes: string } {
+    if (!session.done) return { summary: session.description || session.name, notes: '' }
+    const workout = dayLogs?.workouts.find((log) => log.planId === session.planId)
+    if (workout?.durationSec) return { summary: formatDuration(workout.durationSec), notes: workout.notes ?? '' }
+    const cardio = dayLogs?.cardios.find((log) => log.planId === session.planId || (!log.planId && log.type === session.sport))
+    if (cardio) {
+      const distance = cardio.distanceKm !== undefined ? ` · ${String(cardio.distanceKm).replace('.', ',')} km` : ''
+      return { summary: `${formatDuration(cardio.durationSec)}${distance}`, notes: cardio.notes ?? '' }
+    }
+    return { summary: session.description || session.name, notes: '' }
   }
 
   return (
@@ -132,21 +126,40 @@ export default function Calendar() {
       <MonthCalendar
         year={year}
         monthIndex={monthIndex}
-        sessions={sessions}
+        days={(days ?? []).map((entry) => ({
+          day: entry.day,
+          marks: entry.sessions.map((session) => ({ sport: session.sport, done: session.done })),
+        }))}
         today={today}
         selectedDay={selectedDay}
-        onSelectDay={(day) => {
-          if (sessions.some((session) => session.day === day)) setSelectedDay(day)
-        }}
+        onSelectDay={selectDay}
         onPrev={prevMonth}
         onNext={nextMonth}
       />
-      {selected ? (
+
+      {assignDay !== null ? (
+        <AssignModal
+          schede={schede}
+          onPick={(planId) => {
+            void service
+              .assign(planId, dateOfMonth(year, monthIndex, assignDay))
+              .then(() => {
+                setAssignDay(null)
+                setSelectedDay(null)
+                return refresh()
+              })
+          }}
+          onClose={() => setAssignDay(null)}
+        />
+      ) : null}
+
+      {selectedDay !== null && first ? (
         <DaySummaryModal
-          dateLabel={formatDayLabel(year, monthIndex, selected.day)}
-          title={selectedScheda?.name ?? 'Sessione'}
-          summary={selected.summary}
-          notes={selected.notes}
+          dateLabel={formatDayLabel(year, monthIndex, selectedDay)}
+          title={first.name}
+          summary={summaryFor(first).summary}
+          notes={summaryFor(first).notes}
+          onAdd={() => setAssignDay(selectedDay)}
           onClose={() => setSelectedDay(null)}
         />
       ) : null}

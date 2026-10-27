@@ -4,6 +4,7 @@ export function DaySummaryModal(props: {
   summary: string
   notes: string
   onClose: () => void
+  onAdd?: () => void
 }) {
   return (
     <div
@@ -24,7 +25,19 @@ export function DaySummaryModal(props: {
         {props.notes ? (
           <p style={{ margin: '8px 0 0', color: 'rgba(245,245,247,.7)', fontSize: '14px' }}>{props.notes}</p>
         ) : null}
-        <button className="btn" type="button" style={{ marginTop: '14px' }} onClick={props.onClose}>Chiudi</button>
+        {props.onAdd ? (
+          <button className="btn" type="button" style={{ marginTop: '14px' }} onClick={props.onAdd}>
+            Aggiungi allenamento
+          </button>
+        ) : null}
+        <button
+          className={props.onAdd ? 'btn btn-primary' : 'btn'}
+          type="button"
+          style={{ marginTop: '14px', marginLeft: props.onAdd ? '6px' : 0 }}
+          onClick={props.onClose}
+        >
+          Chiudi
+        </button>
       </div>
     </div>
   )
