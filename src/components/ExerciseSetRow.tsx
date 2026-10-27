@@ -14,7 +14,7 @@ export function ExerciseSetRow({
   isCompleted,
 }: ExerciseSetRowProps) {
   return (
-    <div className="group-row">
+    <div className="group-row group-row-controls">
       <span>Set {index + 1}</span>
       <input
         type="number"
@@ -37,7 +37,7 @@ export function ExerciseSetRow({
         className="btn"
         onClick={() => onToggleComplete(setLog)}
         disabled={isCompleted}
-        aria-label={isCompleted ? 'Set completato' : 'Compluta set'}
+        aria-label={isCompleted ? 'Set completato' : 'Completa set'}
         type="button"
       >
         {isCompleted ? 'Fatto' : 'Segna'}

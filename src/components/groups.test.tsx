@@ -30,6 +30,7 @@ describe('material consolidation', () => {
     expect(root.querySelector('.badge')?.textContent).toBe('Previsto')
     expect(root.querySelector('.btn-tint')?.textContent).toBe('AI Check-In')
     expect(root.querySelector('.session-actions')).not.toBeNull()
+    expect(root.querySelector('.session-actions')).toHaveStyle({ flexWrap: 'wrap' })
     expect(root.innerHTML).not.toContain('fontSize')
   })
 
@@ -44,5 +45,6 @@ describe('material consolidation', () => {
       />,
     )
     expect(container.querySelector('.substitute-menu')).toHaveClass('menu')
+    expect(container.querySelector('.substitute-menu')).toHaveStyle({ zIndex: '3' })
   })
 })

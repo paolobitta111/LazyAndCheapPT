@@ -1,4 +1,6 @@
 import { render } from '@testing-library/react'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { ErrorBoundary } from './ErrorBoundary'
 import { ExerciseRow } from './ExerciseRow'
@@ -19,6 +21,13 @@ describe('content rows and floating controls', () => {
     expect(history.container.firstElementChild?.className).toContain('group-row')
     expect(history.container.innerHTML).not.toContain('is-primary')
     expect(rootClass(<ExerciseRow name="Panca" sets={4} reps={10} weight="60 kg" />)).toContain('group-row')
+  })
+
+  it('lays the set row out as a compact controls row', () => {
+    expect(rootClass(<ExerciseRow name="Panca" sets={4} reps={10} />)).toContain('group-row')
+    const css = readFileSync(resolve(import.meta.dirname, '../../src/styles/glass.css'), 'utf8')
+    expect(css).toMatch(/\.group-row-controls\s*\{[^}]*display:\s*flex/)
+    expect(css).toMatch(/\.group-row-controls\s*\{[^}]*flex-wrap:\s*wrap/)
   })
 
   it('keeps the timer as a floating glass control', () => {

@@ -1,5 +1,5 @@
 // Screenshot capture for visual acceptance (design doc 2026-10-27, Task 7).
-// Run: npx playwright test scripts/screenshots.mjs  (webServer auto-starts)
+// Run: npm run shots   (oppure: npx playwright test scripts/screenshots.spec.mjs)
 // Output: .superpowers/screenshots/<name>.png (git-ignored)
 import { test } from '@playwright/test'
 import { mkdirSync } from 'node:fs'
