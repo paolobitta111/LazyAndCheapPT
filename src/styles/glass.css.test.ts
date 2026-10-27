@@ -46,6 +46,22 @@ describe('glass tokens', () => {
     expect(pkg.dependencies).not.toHaveProperty('bulma')
   })
 
+  it('lays out the glass chrome: fixed capsule bars and shell padding', () => {
+    const index = read('src/index.css')
+    expect(index).not.toContain('navbar')
+    expect(index).not.toContain('bottom-nav')
+    expect(index).toContain('.layout-shell')
+    expect(index).toMatch(/header\.glass-bar,\s*nav\.glass-bar\s*\{[^}]*position:\s*fixed/)
+    expect(index).toMatch(/\.main-content\s*\{[^}]*width:\s*min\(32rem/)
+  })
+
+  it('lays out glass cards as flex columns with nested rows', () => {
+    const css = read('src/styles/glass.css')
+    expect(css).toMatch(/\.glass\s*\{[^}]*display:\s*flex[^}]*flex-direction:\s*column/)
+    expect(css).toContain('.glass .glass')
+    expect(css).toMatch(/\.field\s*\{[^}]*display:\s*block/)
+  })
+
   it('sets the status bar to ink', () => {
     const manifest = read('public/manifest.json')
     expect(manifest).toContain('"theme_color": "#0b0b0d"')
