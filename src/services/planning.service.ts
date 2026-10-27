@@ -75,18 +75,18 @@ export class PlanningService {
     const byPlan = new Map<string, { plan: TrainingPlan; order: number }>()
 
     for (const plan of plans) {
-      if (plan.status !== 'active') continue // rules resolve only for active schede
+      if (!plan.id || plan.status !== 'active') continue // rules resolve only for active schede
       if (cancelled.has(plan.id)) continue
       const rule = plan.plannedSessions?.find((entry) => entry.dayOfWeek === weekday)
       const onDate = plan.dates?.includes(date)
-      if (rule || onDate) byPlan.set(plan.id, { plan, order: rule?.order ?? RULE_LESS_ORDER })
+      if (rule || onDate) byPlan.set(plan.id, { plan: { ...plan, id: plan.id }, order: rule?.order ?? RULE_LESS_ORDER })
     }
 
     for (const planId of planned) {
       if (cancelled.has(planId) || byPlan.has(planId)) continue
       const plan = plans.find((entry) => entry.id === planId)
       if (!plan) continue
-      byPlan.set(planId, { plan, order: RULE_LESS_ORDER })
+      byPlan.set(planId, { plan: { ...plan, id: planId }, order: RULE_LESS_ORDER })
     }
 
     const [workouts, cardios] = await Promise.all([
@@ -94,8 +94,8 @@ export class PlanningService {
       this.cardioLogRepo.listByDate(date),
     ])
 
-    const resolved: ResolvedSession[] = [...byPlan.values()].map(({ plan, order }) => ({
-      planId: plan.id,
+    const resolved: ResolvedSession[] = [...byPlan.entries()].map(([planId, { plan, order }]) => ({
+      planId,
       name: plan.name,
       description: plan.description,
       sport: plan.sport,

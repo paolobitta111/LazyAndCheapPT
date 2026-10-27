@@ -39,6 +39,11 @@ import { db, type TrainingLogDB } from './db'
 
 const now = () => new Date().toISOString()
 
+const genId = (): string =>
+  typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : `id-${Date.now()}-${Math.random().toString(36).slice(2)}`
+
 // ---------------------------------------------------------------------------
 // TrainingPlan Repository
 // ---------------------------------------------------------------------------
@@ -48,6 +53,7 @@ export class TrainingPlanRepoImpl implements TrainingPlanRepo {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
     const entity = {
       ...input,
+      id: (input as { id?: string }).id ?? genId(),
       version: 1,
       status: 'active',
       // SAFETY: Dexie stores ISO strings; entity interface declares Date (coerced in persistence layer)
@@ -127,7 +133,7 @@ export class TrainingPlanRepoImpl implements TrainingPlanRepo {
 export class PlannedSessionRepoImpl implements PlannedSessionRepo {
   async create(input: CreatePlannedSessionInput): Promise<PlannedSession> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
+    const entity = { ...input, id: (input as { id?: string }).id ?? genId(), createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
     const key = await db.plannedSessions.add(entity)
     return { ...entity, id: key as string }
   }
@@ -169,7 +175,7 @@ export class PlannedSessionRepoImpl implements PlannedSessionRepo {
 export class CalendarEntryRepoImpl implements CalendarEntryRepo {
   async create(input: CreateCalendarEntryInput): Promise<CalendarEntry> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
+    const entity = { ...input, id: (input as { id?: string }).id ?? genId(), createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
     const key = await db.calendarEntries.add(entity)
     return { ...entity, id: key as string }
   }
@@ -211,7 +217,7 @@ export class CalendarEntryRepoImpl implements CalendarEntryRepo {
 export class WorkoutLogRepoImpl implements WorkoutLogRepo {
   async create(input: CreateWorkoutLogInput): Promise<WorkoutLog> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
+    const entity = { ...input, id: (input as { id?: string }).id ?? genId(), createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
     const key = await db.workoutLogs.add(entity)
     return { ...entity, id: key as string }
   }
@@ -255,7 +261,7 @@ export class WorkoutLogRepoImpl implements WorkoutLogRepo {
 export class ExerciseLogRepoImpl implements ExerciseLogRepo {
   async create(input: CreateExerciseLogInput): Promise<ExerciseLog> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
+    const entity = { ...input, id: (input as { id?: string }).id ?? genId(), createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
     const key = await db.exerciseLogs.add(entity)
     return { ...entity, id: key as string }
   }
@@ -293,7 +299,7 @@ export class ExerciseLogRepoImpl implements ExerciseLogRepo {
 export class SetLogRepoImpl implements SetLogRepo {
   async create(input: CreateSetLogInput): Promise<SetLog> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
+    const entity = { ...input, id: (input as { id?: string }).id ?? genId(), createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
     const key = await db.setLogs.add(entity)
     return { ...entity, id: key as string }
   }
@@ -331,7 +337,7 @@ export class SetLogRepoImpl implements SetLogRepo {
 export class CardioLogRepoImpl implements CardioLogRepo {
   async create(input: CreateCardioLogInput): Promise<CardioLog> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
+    const entity = { ...input, id: (input as { id?: string }).id ?? genId(), createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date }
     const key = await db.cardioLogs.add(entity)
     return { ...entity, id: key as string }
   }
@@ -373,7 +379,7 @@ export class CardioLogRepoImpl implements CardioLogRepo {
 export class GpxAttachmentRepoImpl implements GpxAttachmentRepo {
   async create(input: CreateGpxAttachmentInput): Promise<GpxAttachment> {
     // SAFETY: Dexie returns string keys; entity schema requires Date (see entities.ts)
-    const entity = { ...input, createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date, uploadedAt: now() as unknown as Date }
+    const entity = { ...input, id: (input as { id?: string }).id ?? genId(), createdAt: now() as unknown as Date, updatedAt: now() as unknown as Date, uploadedAt: now() as unknown as Date }
     const key = await db.gpxAttachments.add(entity)
     return { ...entity, id: key as string }
   }
