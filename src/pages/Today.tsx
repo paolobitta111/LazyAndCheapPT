@@ -124,7 +124,7 @@ export default function Today() {
 
       {healthOpen ? (
         <div className="group" role="dialog" aria-label="Modifica salute">
-          <p className="label">Salute di oggi (a mano: Apple Salute non è accessibile da web)</p>
+          <p className="t-cap" style={{ color: 'var(--label-2)' }}>Salute di oggi (a mano: Apple Salute non è accessibile da web)</p>
           <div style={{ display: 'flex', gap: '6px' }}>
             <input
               className="field"
@@ -152,7 +152,7 @@ export default function Today() {
             />
           </div>
           <button
-            className="btn btn-primary"
+            className="btn btn-tint"
             type="button"
             onClick={() => {
               saveHealth(healthDraft)
